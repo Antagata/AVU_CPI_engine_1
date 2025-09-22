@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>AVU puzzle control</title>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    referrerpolicy="no-referrer"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}?v={{ app_version|default(1) }}"
+  />
+
+  <!-- Small extras only for gauge labels (main look lives in style.css) -->
+  <style>
+    .fd-narrow { max-width: 260px; flex: 0 0 260px; }
+    .gauge-delta { text-align: center; margin-bottom: 6px; opacity: .9; }
+    .gauge-small-label { font-size: 0.75em; }
+    .gauge-tick-label { font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <noscript>
+    <div style="padding:12px;background:#fff3cd;color:#7c4a03;text-align:center">
+      This app requires JavaScript to run.
+    </div>
+  </noscript>
+
+  {% if env_warning %}
+  <div role="alert" aria-live="assertive"
+       style="background:#7f1d1d;color:#fff;border:1px solid #991b1b;padding:10px;border-radius:8px;margin:12px">
+    <strong>Configuration issue:</strong> {{ env_warning }}
+  </div>
+  {% endif %}
+
+  <div class="cockpit-container" role="main">
+    <header class="cockpit-header">
+      <h1>AVU puzzle control</h1>
+      <p>Navigate through client recommendations with precision. Adjust filters to find the perfect match!</p>
+    </header>
+
+    <!-- ================= Gauge / Fine-Tuning ================= -->
+    <section class="unified-gauge-section" aria-labelledby="gauge-heading">
+      <div class="plugin-card" role="group" aria-label="Wine Selection Fine-Tuning">
+        <div class="plugin-topbar">
+          <div class="plugin-brand">
+            <i class="fas fa-sliders-h" aria-hidden="true"></i>
+            <span id="gauge-heading">Wine Selection Fine-Tuning</span>
+          </div>
+          <div class="plugin-right">
+            <span class="plugin-led" id="engine-led" title="Engine status" aria-hidden="true"></span>
+            <span class="plugin-badge" id="gauge-mode">Balance</span>
+          </div>
+        </div>
+
+        <div class="plugin-body">
+          <div class="gauge-delta" id="gauge-delta-text" aria-live="polite">◎ Balanced · Δ=0.00</div>
+
+          <svg
+            class="unified-gauge-svg"
+            viewBox="0 0 200 120"
+            role="img"
+            aria-labelledby="gauge-title gauge-desc"
+          >
+            <title id="gauge-title">Price alignment gauge</title>
+            <desc id="gauge-desc">Shows whether the current calendar skews under/over clients’ usual spend</desc>
+
+            <defs>
+              <linearGradient id="cpiGradientOverall" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%"    stop-color="#22c55e" />
+                <stop offset="50%"   stop-color="#d4af37" />
+                <stop offset="100%"  stop-color="#ef4444" />
+              </linearGradient>
+              <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-opacity="0.35"/>
+              </filter>
+            </defs>
+
+            <path class="gauge-arc" d="M 25 100 A 75 75 0 0 1 175 100"></path>
+            <path class="gauge-fill-arc" id="gauge-fill-arc"
+                  d="M 25 100 A 75 75 0 0 1 175 100"
+                  stroke="url(#cpiGradientOverall)"
+                  stroke-dasharray="110 102" filter="url(#softShadow)"></path>
+
+            <g class="gauge-ticks" opacity="0.55">
+              <line x1="52"  y1="86" x2="56"  y2="90"></line>
+              <line x1="70"  y1="75" x2="74"  y2="80"></line>
+              <line x1="100" y1="70" x2="100" y2="76"></line>
+              <line x1="130" y1="75" x2="126" y2="80"></line>
+              <line x1="148" y1="86" x2="144" y2="90"></line>
+            </g>
+
+            <polygon class="gauge-needle" id="gauge-needle"
+                     points="99,100 101,100 100,28"
+                     transform="rotate(0 100 100)"></polygon>
+            <circle class="gauge-cap" cx="100" cy="100" r="4"></circle>
+
+            <text x="100" y="82" text-anchor="middle"
+                  class="gauge-label-cpi" id="gauge-cpi-value">0.50</text>
+
+            <text x="20"  y="112" class="gauge-tick-label gauge-small-label">Under</text>
+            <text x="180" y="112" class="gauge-tick-label gauge-small-label" text-anchor="end">Over</text>
+            <text x="100" y="112" class="gauge-tick-label" text-anchor="middle">Balanced</text>
+          </svg>
+
+          <!-- Fallback text (hidden once the cards populate) -->
+          <p class="gauge-label-info" id="top-wine-info">Loading top wines...</p>
+
+          <!-- Top 3 recommended wines (auto-populated) -->
+          <div id="top-wines"
+               class="mt-2 flex items-stretch justify-center gap-3"
+               aria-live="polite"
+               aria-label="Top 3 recommended wines"
+               hidden>
+            <!-- Cards injected by inline script below -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Engine / Status ================= -->
+    <section class="engine-progress-section flex flex-col items-center gap-4 mb-4" aria-label="Engine controls and status">
+      <div class="actions">
+        <button
+          id="startEngineBtn"
+          class="run-btn circular-button danger"
+          data-notebook="AVU_ignition_1.ipynb"
+          type="button"
+          title="Start AVU Engine"
+          aria-label="Start AVU Engine"
+        >
+          <i class="fas fa-fire" aria-hidden="true"></i>
+          <span>Start AVU Engine</span>
+        </button>
+      </div>
+
+      <section
+        id="status-panel"
+        class="hidden"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        aria-label="Notebook status"
+      >
+        <div class="status-header">
+          <div id="status-badge" class="badge">Idle</div>
+          <div id="status-notebook" class="subtle" aria-live="polite"></div>
+        </div>
+        <div id="status-message" class="status-message">Waiting…</div>
+        <div class="progress-wrap">
+          <div
+            class="progress-bar-bg"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+            aria-describedby="progress-percent"
+            aria-label="Notebook progress"
+          >
+            <div id="progress-bar-fill" class="progress-bar-fill" style="width:0%"></div>
+          </div>
+          <div id="progress-percent" class="progress-percent">0%</div>
+        </div>
+        <div class="meta">
+          <span id="last-updated" class="subtle" aria-live="polite"></span>
+          <span id="connection-state" class="subtle" aria-live="polite"></span>
+        </div>
+      </section>
+    </section>
+
+    <!-- ================= Filters ================= -->
+    <section id="filters-panel" aria-label="Campaign filters">
+      <div class="fd-item">
+        <label id="loyalty-label">🎚 Loyalty Level:</label>
+        <div class="toggle-buttons vertical" role="group" aria-labelledby="loyalty-label">
+          <div class="button-group" id="loyalty-group">
+            <button class="active" type="button" data-value="all" aria-label="All loyalty levels">All</button>
+            <button type="button" data-value="vip" aria-label="VIP only">vip</button>
+            <button type="button" data-value="gold" aria-label="Gold only">gold</button>
+            <button type="button" data-value="silver" aria-label="Silver only">silver</button>
+            <button type="button" data-value="bronze" aria-label="Bronze only">bronze</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fd-item">
+        <label id="price-tier-label" for="price-tier">🎛️ Price Tier:</label>
+        <select
+          id="price-tier"
+          class="w-full p-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          aria-labelledby="price-tier-label"
+        >
+          <option value="">All</option>
+          <option value="Budget">&lt; CHF 50 — Budget</option>
+          <option value="Mid-range">CHF 50–99 — Mid-range</option>
+          <option value="Premium">CHF 100–199 — Premium</option>
+          <option value="Luxury">CHF 200–499 — Luxury</option>
+          <option value="Ultra Luxury">≥ CHF 500 — Ultra Luxury</option>
+        </select>
+      </div>
+
+      <div class="fd-item fd-narrow">
+        <label id="wine-type-label">🎚 Wine Type:</label>
+        <div class="toggle-buttons" role="group" aria-labelledby="wine-type-label">
+          <div class="button-group" id="wine-type-group">
+            <button class="active" type="button" aria-label="All wine types">All</button>
+            <button type="button" aria-label="Red">Red</button>
+            <button type="button" aria-label="White">White</button>
+            <button type="button" aria-label="Rosé">Rose</button>
+            <button type="button" aria-label="Sparkling">Sparkling</button>
+            <button type="button" aria-label="Dessert">Dessert</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fd-item">
+        <label for="bottle-size-slicer">🍾 Size:</label>
+        <select
+          id="bottle-size-slicer"
+          title="Bottle size"
+          class="w-full p-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+        >
+          <option value="375">Half (375ml)</option>
+          <option value="750" selected>Standard (750ml)</option>
+          <option value="1500">Magnum (1.5L)</option>
+          <option value="bigger">Bigger Size</option>
+        </select>
+
+        <label for="bigger-size-selector" class="sr-only">Choose bigger bottle size</label>
+        <select
+          id="bigger-size-selector"
+          title="Bigger bottle size"
+          class="w-full p-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 mt-2 hidden"
+        ></select>
+        <span id="bottle-size-value" class="text-sm text-gray-400 mt-1" aria-live="polite">750ml</span>
+      </div>
+
+      <div class="fd-item">
+        <label class="flex items-center gap-2" for="last-stock-checkbox" title="Filter last stock under 10">
+          <input type="checkbox" id="last-stock-checkbox" />
+          <i class="fas fa-exclamation-triangle text-orange-400" aria-hidden="true"></i>
+          <span>Last Stock (&lt;10)</span>
+        </label>
+        <label class="flex items-center gap-2 mt-2" for="seasonality-checkbox" title="Boost seasonality">
+          <input type="checkbox" id="seasonality-checkbox" />
+          <i class="fas fa-calendar-alt text-green-400" aria-hidden="true"></i>
+          <span>Seasonality Boost</span>
+        </label>
+      </div>
+
+      <div class="fd-item">
+        <label for="pb-size-filter">📏 Analytics Size</label>
+        <select
+          id="pb-size-filter"
+          class="w-full p-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          title="Set analytics height"
+        >
+          <option value="auto" selected>Auto</option>
+          <option value="short">Short</option>
+          <option value="tall">Tall</option>
+          <option value="full">Full</option>
+        </select>
+      </div>
+
+      <button id="filters-compact-btn" type="button" title="Compact/expand filters">Compact filters</button>
+    </section>
+
+    <!-- ================= Analytics iframe ================= -->
+    <section class="control-item mt-6" aria-label="Interactive analytics">
+      <label for="powerbi-frame">📈 Interactive Analytics (Power BI)</label>
+      <iframe
+        id="powerbi-frame"
+        title="Power BI analytics"
+        width="100%"
+        height="250"
+        src="https://app.powerbi.com/view?r=YOUR_REPORT_ID"
+        style="border: 1px solid #6b4d3a; border-radius: 8px;"
+        loading="lazy"
+        allowfullscreen
+      ></iframe>
+    </section>
+
+    <!-- ================= Offer actions + Calendar ================= -->
+    <section class="control-panel" aria-label="Offer actions">
+      <div class="left-column">
+        <div class="control-item">
+          <label for="clientName">👤 Client name (optional)</label>
+          <input
+            id="clientName"
+            type="text"
+            class="w-full p-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            placeholder="Valued Client"
+          />
+        </div>
+
+        <section class="actions mt-2" aria-label="Offer generation">
+          <button
+            class="run-btn circular-button success"
+            data-notebook="AUTONOMOUS_AVU_OMT_3.ipynb"
+            id="generateOfferBtn"
+            type="button"
+            title="Generate Offer from selected wine"
+            aria-label="Generate Offer from selected wine"
+            aria-disabled="true"
+          >
+            <i class="fas fa-box" aria-hidden="true"></i>
+            <span>Generate Offer</span>
+          </button>
+          <button
+            class="run-btn circular-button success mt-4"
+            data-notebook="TAILOR_MADE_OFFER.ipynb"
+            id="generateTailorMadeOfferBtn"
+            type="button"
+            title="Generate Tailor-made Offer from selected wine"
+            aria-label="Generate Tailor-made Offer from selected wine"
+            aria-disabled="true"
+          >
+            <i class="fas fa-magic" aria-hidden="true"></i>
+            <span>Generate Tailor-made offer</span>
+          </button>
+        </section>
+      </div>
+
+      <div class="right-column">
+        <div class="calendar-grid-container" aria-label="Weekly calendar" id="calendar-container">
+          <div class="flex items-center justify-center gap-4 mb-4">
+            <label for="weekSelector" class="text-gray-300 font-semibold">📅 Select Week:</label>
+            <select
+              id="weekSelector"
+              title="Select ISO week"
+              class="week-dropdown p-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              aria-controls="main-calendar-grid"
+            ></select>
+            <button
+              id="loadScheduleBtn"
+              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200 opacity-50 pointer-events-none"
+              disabled
+              type="button"
+              title="Run Start AVU Engine first"
+              aria-label="Load new schedule for selected week"
+            >
+              🔄 Load new schedule
+            </button>
+          </div>
+
+
+
+
+
+
+
+
+          <div class="calendar-grid" id="main-calendar-grid" aria-live="polite"></div>
+        </div>
+
+        <div class="control-group justify-end gap-4 mt-4">
+          <button class="cruise-button cruise-button-small" type="button" title="Cat style theme" aria-label="Apply Cat style theme">
+            <i class="fas fa-cat" aria-hidden="true"></i>
+            <span>Cat Style</span>
+          </button>
+          <button class="cruise-button cruise-button-small" type="button" title="Nigo style theme" aria-label="Apply Nigo style theme">
+            <i class="fas fa-robot" aria-hidden="true"></i>
+            <span>Nigo Style</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= Quick Add ================= -->
+  <div id="qa-overlay" class="qa hidden" role="dialog" aria-modal="true" aria-labelledby="qa-slot-label">
+    <div class="qa-card">
+      <div class="qa-h">
+        <div class="qa-title">Add wine to <span id="qa-slot-label"></span></div>
+        <button class="qa-x" id="qa-close" aria-label="Close Quick Add" type="button">×</button>
+      </div>
+
+      <label class="qa-l" for="qa-wine">Wine</label>
+      <input
+        id="qa-wine"
+        class="qa-i"
+        type="text"
+        placeholder="Search wine name…"
+        autocomplete="off"
+        title="Search wine"
+      />
+      <ul id="qa-suggestions" class="qa-s" role="listbox" aria-label="Wine suggestions"></ul>
+
+      <label class="qa-l" for="qa-vintage">Vintage</label>
+      <select id="qa-vintage" class="qa-i" title="Select vintage"></select>
+
+      <div class="qa-actions">
+        <button id="qa-add-lock" class="qa-btn primary" type="button" title="Add and lock">Add &amp; Lock</button>
+        <button id="qa-add-unlock" class="qa-btn" type="button" title="Add unlocked">Add (unlocked)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main app logic -->
+  <script defer src="{{ url_for('static', filename='app.js') }}?v={{ app_version|default(1) }}"></script>
+
+  <!-- Tiny helper to render Top 3 once the engine has populated the calendar -->
+  <script>
+    (function () {
+      const infoEl = document.getElementById('top-wine-info');
+      const wrapEl = document.getElementById('top-wines');
+
+      function escapeHtml(s) {
+        return String(s ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+      }
+
+      function pickTopThree() {
+        const cards = Array.from(document.querySelectorAll('#main-calendar-grid .wine-box'));
+        if (!cards.length) return [];
+
+        // Ignore items living in multi-day Leads boxes
+        const items = cards
+          .filter(c => !c.closest('.leads-box'))
+          .map(c => ({
+            el: c,
+            name: c.dataset.name || '',
+            vintage: c.dataset.vintage || 'NV',
+            cpi: Number.parseFloat(c.dataset.cpiScore || '0') || 0,
+            tier: c.dataset.priceTier || '',
+            stock: c.dataset.stock || '',
+            day: c.dataset.day || ''
+          }));
+
+        if (!items.length) return [];
+        items.sort((a, b) => b.cpi - a.cpi);
+        return items.slice(0, 3);
+      }
+
+      function renderTop() {
+        const top = pickTopThree();
+        if (!top.length) return;
+
+        wrapEl.innerHTML = top.map((it, i) => `
+          <div class="bg-gray-800/70 border border-amber-400/40 rounded-lg px-3 py-2 shadow-sm text-sm min-w-[180px]">
+            <div class="flex items-center justify-between">
+              <span class="font-semibold text-amber-300">#${i + 1}</span>
+              <span class="text-xs text-gray-400">${escapeHtml(it.day)}</span>
+            </div>
+            <div class="mt-1 font-semibold text-amber-200 leading-tight">
+              ${escapeHtml(it.name)} <span class="opacity-80">(${escapeHtml(it.vintage)})</span>
+            </div>
+            <div class="text-xs text-gray-300/90">
+              ${escapeHtml(it.tier || '-')}${it.stock ? ` • Stock: ${escapeHtml(it.stock)}` : ''}${Number.isFinite(it.cpi) ? ` • CPI: ${it.cpi.toFixed(2)}` : ''}
+            </div>
+          </div>
+        `).join('');
+
+        wrapEl.hidden = false;
+        if (infoEl) infoEl.style.display = 'none';
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const grid = document.getElementById('main-calendar-grid');
+        if (!grid) return;
+
+        // Observe calendar rendering (works after AVU_ignition_1.ipynb or schedule runs)
+        const obs = new MutationObserver(() => {
+          clearTimeout(grid._topRecDebounce);
+          grid._topRecDebounce = setTimeout(renderTop, 150);
+        });
+        obs.observe(grid, { childList: true, subtree: true });
+
+        // Also try once in case content is already there
+        setTimeout(renderTop, 800);
+      });
+    })();
+  </script>
+</body>
+</html>

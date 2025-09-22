@@ -1,0 +1,383 @@
+{
+  "Monday": [
+    {
+      "id": "65280",
+      "wine": "Family and Friends",
+      "vintage": "2024",
+      "full_type": "Still White",
+      "region_group": "Noto",
+      "stock": 1704,
+      "price_tier": "Budget",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "65281",
+      "wine": "Family and Friends",
+      "vintage": "2024",
+      "full_type": "Still White",
+      "region_group": "Noto",
+      "stock": 107,
+      "price_tier": "Budget",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "65282",
+      "wine": "Family and Friends Firraru",
+      "vintage": "2023",
+      "full_type": "Still White",
+      "region_group": "Noto",
+      "stock": 474,
+      "price_tier": "Budget",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "59230",
+      "wine": "Chianti Classico Gran Selezione Vigna del Sorbo",
+      "vintage": "2020",
+      "full_type": "Still Red",
+      "region_group": "Chianti Classico Gran Selezione",
+      "stock": 588,
+      "price_tier": "Mid-range",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "59231",
+      "wine": "Chianti Classico Gran Selezione Vigna del Sorbo",
+      "vintage": "2020",
+      "full_type": "Still Red",
+      "region_group": "Chianti Classico Gran Selezione",
+      "stock": 5,
+      "price_tier": "Premium",
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Tuesday": [
+    {
+      "id": "62188",
+      "wine": "The Mascot",
+      "vintage": "2020",
+      "full_type": "Still Red",
+      "region_group": "Napa Valley",
+      "stock": 258,
+      "price_tier": "Premium",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "62189",
+      "wine": "The Mascot",
+      "vintage": "2020",
+      "full_type": "Still Red",
+      "region_group": "Napa Valley",
+      "stock": 21,
+      "price_tier": "Luxury",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "59361",
+      "wine": "Assortment 12x75cl 100 Parker (1xBDL,1xCli,1xCF,1xCos,1xDB,1xEva,1xLP,1xMon,1xPav,1xPC,1xSHLR,1xPCB)",
+      "vintage": "2009",
+      "full_type": "Still",
+      "region_group": "Bordeaux",
+      "stock": 49,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "65275",
+      "wine": "B\u00f2ggina Bianco",
+      "vintage": "2023",
+      "full_type": "Still White",
+      "region_group": "Valdarno",
+      "stock": 492,
+      "price_tier": "Budget",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "65276",
+      "wine": "B\u00f2ggina Bianco",
+      "vintage": "2023",
+      "full_type": "Still White",
+      "region_group": "Valdarno",
+      "stock": 42,
+      "price_tier": "Premium",
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Wednesday": [
+    {
+      "id": "60103",
+      "wine": "Champagne Brut Vintage",
+      "vintage": "2011",
+      "full_type": "Sparkling White",
+      "region_group": "Champagne",
+      "stock": 132,
+      "price_tier": "Luxury",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "35774",
+      "wine": "Trotanoy",
+      "vintage": "2015",
+      "full_type": "Still Red",
+      "region_group": "Pomerol",
+      "stock": 324,
+      "price_tier": "Luxury",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "35775",
+      "wine": "Trotanoy",
+      "vintage": "2015",
+      "full_type": "Still Red",
+      "region_group": "Pomerol",
+      "stock": 9,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "57245",
+      "wine": "Cantemerle",
+      "vintage": "2022",
+      "full_type": "Still Red",
+      "region_group": "Haut M\u00e9doc",
+      "stock": 1608,
+      "price_tier": "Budget",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "64812",
+      "wine": "Assortment Grand Cru 3x150cl (1x Clos de Vougeot, 1x Echezeaux, 1x La Roman\u00e9e)",
+      "vintage": "2016",
+      "full_type": "Still Red",
+      "region_group": "C\u00f4te de Nuits",
+      "stock": 1,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Thursday": [
+    {
+      "id": "40239",
+      "wine": "Latour",
+      "vintage": "2016",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "62972",
+      "wine": "Latour",
+      "vintage": "2016",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "62973",
+      "wine": "Latour",
+      "vintage": "2016",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "62974",
+      "wine": "Latour",
+      "vintage": "2016",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "62975",
+      "wine": "Latour",
+      "vintage": "2016",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Friday": [
+    {
+      "id": "51304",
+      "wine": "Pontet Canet",
+      "vintage": "2019",
+      "full_type": "Still Red",
+      "region_group": "Pauillac",
+      "stock": 132,
+      "price_tier": "Mid-range",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "51305",
+      "wine": "Pontet Canet",
+      "vintage": "2019",
+      "full_type": "Still Red",
+      "region_group": "Pauillac",
+      "stock": 22,
+      "price_tier": "Luxury",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "51306",
+      "wine": "Pontet Canet",
+      "vintage": "2019",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "51307",
+      "wine": "Pontet Canet",
+      "vintage": "2019",
+      "full_type": "Still Red",
+      "region_group": "Pauillac",
+      "stock": 8,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "51310",
+      "wine": "Pontet Canet",
+      "vintage": "2019",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Saturday": [
+    {
+      "id": "62168",
+      "wine": "Le Petit Cheval Blanc",
+      "vintage": "2022",
+      "full_type": "Still White",
+      "region_group": "Bordeaux Blanc",
+      "stock": 141,
+      "price_tier": "Premium",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "62169",
+      "wine": "Le Petit Cheval Blanc",
+      "vintage": "2022",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "52532",
+      "wine": "Bellevue",
+      "vintage": "2019",
+      "full_type": "Still Red",
+      "region_group": "St. Emilion",
+      "stock": 276,
+      "price_tier": "Budget",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "17239",
+      "wine": "Hermitage La Chapelle",
+      "vintage": "1990",
+      "full_type": "Still Red",
+      "region_group": "Hermitage",
+      "stock": 18,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 3
+    },
+    null
+  ],
+  "Sunday": [
+    {
+      "id": "14956",
+      "wine": "Champagne Demi Sec Ice Imp\u00e9rial",
+      "vintage": "NV",
+      "full_type": "Sparkling White",
+      "region_group": "Champagne",
+      "stock": 78,
+      "price_tier": "Budget",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "38026",
+      "wine": "Champagne Demi Sec Ice Imp\u00e9rial Ros\u00e9",
+      "vintage": "NV",
+      "full_type": "Sparkling Rose",
+      "region_group": "Champagne",
+      "stock": 102,
+      "price_tier": "Mid-range",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "11181",
+      "wine": "Haut Brion",
+      "vintage": "2005",
+      "full_type": "Still Red",
+      "region_group": "Graves, Pessac-L\u00e9ognan",
+      "stock": 21,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "11182",
+      "wine": "Haut Brion",
+      "vintage": "2005",
+      "full_type": "Still Red",
+      "region_group": "Graves, Pessac-L\u00e9ognan",
+      "stock": 4,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "17321",
+      "wine": "Haut Brion",
+      "vintage": "2005",
+      "full_type": "Still Red",
+      "region_group": "Graves, Pessac-L\u00e9ognan",
+      "stock": 10,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 4
+    }
+  ]
+}

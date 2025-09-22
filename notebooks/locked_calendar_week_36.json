@@ -1,0 +1,336 @@
+{
+  "Monday": [
+    {
+      "id": "65428",
+      "wine": "Opus One",
+      "vintage": "2022",
+      "full_type": "Still Red",
+      "region_group": "Napa Valley",
+      "stock": 1002,
+      "price_tier": "Luxury",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "65429",
+      "wine": "Overture",
+      "vintage": "2022",
+      "full_type": "Still Red",
+      "region_group": "Napa Valley",
+      "stock": 258,
+      "price_tier": "Premium",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "65430",
+      "wine": "Opus One",
+      "vintage": "2022",
+      "full_type": "Still Red",
+      "region_group": "Napa Valley",
+      "stock": 48,
+      "price_tier": "Premium",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "65431",
+      "wine": "Opus One",
+      "vintage": "2022",
+      "full_type": "Still Red",
+      "region_group": "Napa Valley",
+      "stock": 27,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "65432",
+      "wine": "Opus One",
+      "vintage": "2022",
+      "full_type": "Still Red",
+      "region_group": "Napa Valley",
+      "stock": 5,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Tuesday": [
+    {
+      "id": "57156",
+      "wine": "Margaux",
+      "vintage": "2022",
+      "full_type": "Still Red",
+      "region_group": "Margaux",
+      "stock": 96,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "58831",
+      "wine": "Margaux",
+      "vintage": "2022",
+      "full_type": "Still Red",
+      "region_group": "Margaux",
+      "stock": 9,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "58832",
+      "wine": "Margaux",
+      "vintage": "2022",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "58833",
+      "wine": "Margaux",
+      "vintage": "2022",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "29971",
+      "wine": "Haut Brion",
+      "vintage": "2014",
+      "full_type": "Still Red",
+      "region_group": "Graves, Pessac-L\u00e9ognan",
+      "stock": 72,
+      "price_tier": "Luxury",
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Wednesday": [
+    {
+      "id": "63044",
+      "wine": "Ang\u00e9lus Hommage \u00e0 Elisabeth Bouchet",
+      "vintage": "2022",
+      "full_type": "Still Red",
+      "region_group": "St. Emilion",
+      "stock": 99,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "63045",
+      "wine": "Ang\u00e9lus Hommage \u00e0 Elisabeth Bouchet",
+      "vintage": "2022",
+      "full_type": "Still Red",
+      "region_group": "St. Emilion",
+      "stock": 6,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "64179",
+      "wine": "Almaviva",
+      "vintage": "2023",
+      "full_type": "Still Red",
+      "region_group": "Puente Alto",
+      "stock": 162,
+      "price_tier": "Mid-range",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "64195",
+      "wine": "EPU by Almaviva",
+      "vintage": "2023",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "65451",
+      "wine": "Almaviva",
+      "vintage": "2023",
+      "full_type": "Still Red",
+      "region_group": "Puente Alto",
+      "stock": 19,
+      "price_tier": "Premium",
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Thursday": [
+    {
+      "id": "62397",
+      "wine": "Solaia",
+      "vintage": "2022",
+      "full_type": "Still Red",
+      "region_group": "Tuscany",
+      "stock": 144,
+      "price_tier": "Luxury",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "65464",
+      "wine": "Solaia",
+      "vintage": "2022",
+      "full_type": "Still Red",
+      "region_group": "Tuscany",
+      "stock": 10,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "65465",
+      "wine": "Solaia",
+      "vintage": "2022",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "65466",
+      "wine": "Solaia",
+      "vintage": "2022",
+      "full_type": "Still Red",
+      "region_group": "Tuscany",
+      "stock": 3,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "65467",
+      "wine": "Ygrec de Ch. d'Yquem",
+      "vintage": "2023",
+      "full_type": "Still White",
+      "region_group": "Bordeaux",
+      "stock": 420,
+      "price_tier": "Premium",
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Friday": [
+    null,
+    {
+      "id": "65481",
+      "wine": "Palmer (Ex-Ch\u00e2teau)",
+      "vintage": "2015",
+      "full_type": "Still Red",
+      "region_group": "Margaux",
+      "stock": 1,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "65477",
+      "wine": "Palmer (Ex-Ch\u00e2teau)",
+      "vintage": "2015",
+      "full_type": "Still Red",
+      "region_group": "Margaux",
+      "stock": 9,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "65479",
+      "wine": "Palmer (Ex-Ch\u00e2teau)",
+      "vintage": "2015",
+      "full_type": "Still Red",
+      "region_group": "Margaux",
+      "stock": 3,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "65480",
+      "wine": "Palmer (Ex-Ch\u00e2teau)",
+      "vintage": "2015",
+      "full_type": "Still Red",
+      "region_group": "Margaux",
+      "stock": 3,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Saturday": [
+    null,
+    {
+      "id": "62303",
+      "wine": "Dom P\u00e9rignon Special Edition Jean-Michel Basquiat",
+      "vintage": "2015",
+      "full_type": "Sparkling",
+      "region_group": "Champagne",
+      "stock": 48,
+      "price_tier": "Luxury",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "4369",
+      "wine": "Mouton Rothschild",
+      "vintage": "2009",
+      "full_type": "Still Red",
+      "region_group": "Pauillac",
+      "stock": 468,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "11286",
+      "wine": "Mouton Rothschild",
+      "vintage": "2009",
+      "full_type": "Still Red",
+      "region_group": "Pauillac",
+      "stock": 9,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "25903",
+      "wine": "Mouton Rothschild",
+      "vintage": "2009",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Sunday": [
+    {
+      "id": "65426",
+      "wine": "Champagne Brut Grande Cuv\u00e9e (Edition 170)",
+      "vintage": "NV",
+      "full_type": "Sparkling White",
+      "region_group": "Champagne",
+      "stock": 24,
+      "price_tier": "Luxury",
+      "locked": true,
+      "slot": 0
+    },
+    null,
+    null,
+    null,
+    null
+  ]
+}

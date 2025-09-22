@@ -1,0 +1,268 @@
+{
+  "Monday": [
+    {
+      "id": "65509",
+      "wine": "Yjar",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "62562",
+      "wine": "Barbaresco",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "38947",
+      "wine": "Barbaresco",
+      "vintage": "2013",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "62563",
+      "wine": "Barbaresco",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "65387",
+      "wine": "Mouton Rothschild",
+      "vintage": "2024",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Tuesday": [
+    {
+      "id": "65412",
+      "wine": "Concerto",
+      "vintage": "2023",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "65416",
+      "wine": "Concerto",
+      "vintage": "2023",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "65417",
+      "wine": "Concerto",
+      "vintage": "2023",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "65418",
+      "wine": "Concerto",
+      "vintage": "2023",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "65419",
+      "wine": "Concerto",
+      "vintage": "2023",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Wednesday": [
+    {
+      "id": "2459",
+      "wine": "Figeac",
+      "vintage": "2009",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "34917",
+      "wine": "Figeac",
+      "vintage": "2009",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "34919",
+      "wine": "Figeac",
+      "vintage": "2010",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "62793",
+      "wine": "Lab\u00e9gorce",
+      "vintage": "2019",
+      "full_type": "Still Red",
+      "region_group": "Margaux",
+      "stock": 276,
+      "price_tier": "Budget",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "65592",
+      "wine": "Pym Rae",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Thursday": [
+    {
+      "id": "62145",
+      "wine": "Clos Apalta",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "62146",
+      "wine": "Clos Apalta",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "62147",
+      "wine": "Clos Apalta",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "62148",
+      "wine": "Clos Apalta",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "62150",
+      "wine": "Clos Apalta",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Friday": [
+    {
+      "id": "11280",
+      "wine": "Mouton Rothschild",
+      "vintage": "2005",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "11281",
+      "wine": "Mouton Rothschild",
+      "vintage": "2005",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "4361",
+      "wine": "Mouton Rothschild",
+      "vintage": "2005",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "4362",
+      "wine": "Mouton Rothschild",
+      "vintage": "2005",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    null
+  ],
+  "Saturday": [
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "Sunday": [
+    null,
+    null,
+    null,
+    null,
+    null
+  ]
+}

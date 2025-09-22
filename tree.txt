@@ -1,0 +1,60 @@
+Folder PATH listing for volume Windows
+Volume serial number is 44BC-3240
+C:.
+¦   app.py
+¦   config.py
+¦   requirements.txt
+¦   tree.txt
+¦   
++---logs
+¦       campaign_log.txt
+¦       
++---notebooks
+¦   ¦   AUTONOMOUS_AVU_OMT_3.ipynb
+¦   ¦   AVU_ignition_1.ipynb
+¦   ¦   AVU_schedule_only.ipynb
+¦   ¦   executed_AUTONOMOUS_AVU_OMT_3.ipynb
+¦   ¦   executed_AVU_ignition_1.ipynb
+¦   ¦   executed_AVU_schedule_only.ipynb
+¦   ¦   filters.json
+¦   ¦   filters_resolved.json
+¦   ¦   locked_calendar.json
+¦   ¦   status.json
+¦   ¦   
+¦   +---offers
++---static
+¦   ¦   app.js
+¦   ¦   style.css
+¦   ¦   
+¦   +---config
+¦   ¦       ui_config.json
+¦   ¦       
+¦   +---images
+¦           AVU_Background1.jpg
+¦           engine background.png
+¦           
++---templates
+¦       cockpit_ui.html
+¦       
++---utils
+¦   ¦   notebook_runner.py
+¦   ¦   notebook_status.py
+¦   ¦   schemas.py
+¦   ¦   __init__.py
+¦   ¦   
+¦   +---__pycache__
+¦           notebook_runner.cpython-311.pyc
+¦           notebook_runner.cpython-312.pyc
+¦           notebook_runner.cpython-313.pyc
+¦           notebook_status.cpython-311.pyc
+¦           notebook_status.cpython-312.pyc
+¦           notebook_status.cpython-313.pyc
+¦           schemas.cpython-312.pyc
+¦           __init__.cpython-311.pyc
+¦           __init__.cpython-312.pyc
+¦           __init__.cpython-313.pyc
+¦           
++---__pycache__
+        config.cpython-312.pyc
+        config.cpython-313.pyc
+        

@@ -1,0 +1,313 @@
+{
+  "Monday": [
+    {
+      "id": "63269",
+      "wine": "Vigna dell'Impero",
+      "vintage": "2020",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "65278",
+      "wine": "Vigna dell'Impero",
+      "vintage": "2020",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "62224",
+      "wine": "Yjar",
+      "vintage": "2020",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    null,
+    null
+  ],
+  "Tuesday": [
+    {
+      "id": "57135",
+      "wine": "Dassault",
+      "vintage": "2022",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "4620",
+      "wine": "P\u00e9trus",
+      "vintage": "2010",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "4131",
+      "wine": "P\u00e9trus",
+      "vintage": "2010",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "53991",
+      "wine": "P\u00e9by Faugeres",
+      "vintage": "2020",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "54124",
+      "wine": "P\u00e9by Faugeres",
+      "vintage": "2020",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Wednesday": [
+    {
+      "id": "56383",
+      "wine": "Colore",
+      "vintage": "2020",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "56384",
+      "wine": "Colore",
+      "vintage": "2020",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "1403",
+      "wine": "Cheval Blanc",
+      "vintage": "2010",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "23721",
+      "wine": "Cheval Blanc",
+      "vintage": "2010",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "23730",
+      "wine": "Cheval Blanc",
+      "vintage": "2010",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Thursday": [
+    {
+      "id": "65187",
+      "wine": "Le Coeur Clos de Bouard",
+      "vintage": "2022",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "62135",
+      "wine": "Opus One",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    null,
+    {
+      "id": "56306",
+      "wine": "Opus One",
+      "vintage": "2019",
+      "full_type": "Still Red",
+      "region_group": "Napa Valley",
+      "stock": 123,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "62141",
+      "wine": "Opus One",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Friday": [
+    {
+      "id": "62101",
+      "wine": "Crognolo",
+      "vintage": "2022",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "62795",
+      "wine": "Crognolo",
+      "vintage": "2022",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "64722",
+      "wine": "Crognolo",
+      "vintage": "2022",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "55625",
+      "wine": "Cos d'Estournel",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "55628",
+      "wine": "Cos d'Estournel",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Saturday": [
+    {
+      "id": "35789",
+      "wine": "Guiraud",
+      "vintage": "2015",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "35788",
+      "wine": "Guiraud",
+      "vintage": "2015",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "65237",
+      "wine": "Axelle de Valandraud",
+      "vintage": "2010",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "49764",
+      "wine": "Barolo Monfortino Riserva",
+      "vintage": "2013",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "54857",
+      "wine": "Barolo Monfortino Riserva",
+      "vintage": "2013",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Sunday": [
+    {
+      "id": "62755",
+      "wine": "\u00danico Reserva Especial Venta 2025 (2011+2012+2013)",
+      "vintage": "2025",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "55416",
+      "wine": "Pavie",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    null,
+    null,
+    null
+  ]
+}

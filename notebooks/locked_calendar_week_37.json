@@ -1,0 +1,319 @@
+{
+  "Monday": [
+    {
+      "id": "63301",
+      "wine": "Grange",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "65497",
+      "wine": "Cabernet Sauvignon Bin 707",
+      "vintage": "2023",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "4369",
+      "wine": "Mouton Rothschild",
+      "vintage": "2009",
+      "full_type": "Still Red",
+      "region_group": "Pauillac",
+      "stock": 468,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "11286",
+      "wine": "Mouton Rothschild",
+      "vintage": "2009",
+      "full_type": "Still Red",
+      "region_group": "Pauillac",
+      "stock": 9,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "25903",
+      "wine": "Mouton Rothschild",
+      "vintage": "2009",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Tuesday": [
+    {
+      "id": "65249",
+      "wine": "Oreno",
+      "vintage": "2023",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "65250",
+      "wine": "Oreno",
+      "vintage": "2023",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "65524",
+      "wine": "Latour (Ex-Ch\u00e2teau)",
+      "vintage": "2012",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "65525",
+      "wine": "Latour (Ex-Ch\u00e2teau)",
+      "vintage": "2012",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "65526",
+      "wine": "Latour (Ex-Ch\u00e2teau)",
+      "vintage": "2012",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Wednesday": [
+    null,
+    {
+      "id": "63593",
+      "wine": "Mouton Rothschild",
+      "vintage": "2024",
+      "full_type": "Still Red",
+      "region_group": "Pauillac",
+      "stock": 2670,
+      "price_tier": "Luxury",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "63594",
+      "wine": "Mouton Rothschild",
+      "vintage": "2024",
+      "full_type": "Still Red",
+      "region_group": "Pauillac",
+      "stock": 60,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "63595",
+      "wine": "Mouton Rothschild",
+      "vintage": "2024",
+      "full_type": "Still Red",
+      "region_group": "Pauillac",
+      "stock": 100,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "63596",
+      "wine": "Mouton Rothschild",
+      "vintage": "2024",
+      "full_type": "Still Red",
+      "region_group": "Pauillac",
+      "stock": 40,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Thursday": [
+    null,
+    {
+      "id": "65281",
+      "wine": "Family and Friends",
+      "vintage": "2024",
+      "full_type": "Still White",
+      "region_group": "Noto",
+      "stock": 107,
+      "price_tier": "Budget",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "65282",
+      "wine": "Family and Friends Firraru",
+      "vintage": "2023",
+      "full_type": "Still White",
+      "region_group": "Noto",
+      "stock": 474,
+      "price_tier": "Budget",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "65537",
+      "wine": "Retout",
+      "vintage": "2019",
+      "full_type": "Still Red",
+      "region_group": "Haut M\u00e9doc",
+      "stock": 468,
+      "price_tier": "Budget",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "63100",
+      "wine": "Barbaresco Albesani",
+      "vintage": "2019",
+      "full_type": "Still Red",
+      "region_group": "Barbaresco",
+      "stock": 30,
+      "price_tier": "Premium",
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Friday": [
+    null,
+    {
+      "id": "62428",
+      "wine": "Champagne Brut R\u00e9serve",
+      "vintage": "NV",
+      "full_type": "Sparkling White",
+      "region_group": "Champagne",
+      "stock": 27,
+      "price_tier": "Mid-range",
+      "locked": true,
+      "slot": 1
+    },
+    null,
+    {
+      "id": "51631",
+      "wine": "L\u00e9oville Las Cases",
+      "vintage": "2019",
+      "full_type": "Still Red",
+      "region_group": "St. Julien",
+      "stock": 7,
+      "price_tier": "Luxury",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "51632",
+      "wine": "L\u00e9oville Las Cases",
+      "vintage": "2019",
+      "full_type": "Still Red",
+      "region_group": "St. Julien",
+      "stock": 4,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Saturday": [
+    {
+      "id": "2088",
+      "wine": "Lafleur",
+      "vintage": "2005",
+      "full_type": "Still Red",
+      "region_group": "Pomerol",
+      "stock": 24,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "32010",
+      "wine": "Lafleur",
+      "vintage": "2005",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "3230",
+      "wine": "Margaux",
+      "vintage": "2000",
+      "full_type": "Still Red",
+      "region_group": "Margaux",
+      "stock": 4,
+      "price_tier": "Ultra Luxury",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "3971",
+      "wine": "Margaux",
+      "vintage": "2000",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    null
+  ],
+  "Sunday": [
+    null,
+    {
+      "id": "65342",
+      "wine": "Don PX Convento Selecci\u00f3n",
+      "vintage": "1931",
+      "full_type": "Sweet",
+      "region_group": "Montilla-Moriles",
+      "stock": 27,
+      "price_tier": "Luxury",
+      "locked": true,
+      "slot": 1
+    },
+    null,
+    {
+      "id": "65318",
+      "wine": "P\u00e9trus",
+      "vintage": "2012",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "65319",
+      "wine": "P\u00e9trus",
+      "vintage": "2012",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ]
+}

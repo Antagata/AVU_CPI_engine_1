@@ -1,0 +1,26 @@
+{
+  "week_number": 34,
+  "filters": {
+    "loyalty": "all",
+    "wine_type": null,
+    "bottle_size": 750,
+    "price_tier_bucket": "",
+    "last_stock": false,
+    "last_stock_threshold": 10,
+    "seasonality_boost": false,
+    "style": "default",
+    "calendar_day": "Thursday"
+  },
+  "engine_fill_policy": {
+    "min_slots_per_day": 5,
+    "relaxation_enabled": true,
+    "relaxation_order": [
+      "loyalty",
+      "wine_type",
+      "bottle_size",
+      "price_tier",
+      "last_stock_only",
+      "seasonality"
+    ]
+  }
+}

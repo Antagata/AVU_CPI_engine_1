@@ -1,0 +1,10 @@
+{
+  "ironDataPath": "C:\\\\Users\\\\Marco.Africani\\\\OneDrive - AVU SA\\\\AVU CPI Campaign\\\\Puzzle_control_Reports\\\\IRON_DATA",
+  "priceBaselineByLoyalty": {
+    "all": 0.55,
+    "vip": 0.78,
+    "gold": 0.66,
+    "silver": 0.50,
+    "bronze": 0.36
+  }
+}

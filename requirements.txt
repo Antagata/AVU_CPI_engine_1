@@ -1,0 +1,11 @@
+flask
+nbformat
+nbconvert
+pandas
+papermill
+openpyxl
+tqdm
+unidecode
+pytz
+jsonschema>=4.21
+
