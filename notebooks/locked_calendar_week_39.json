@@ -1,6 +1,15 @@
 {
   "Monday": [
-    null,
+    {
+      "id": null,
+      "wine": "Philipponnat Clos des Goisses",
+      "vintage": "2016",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
     {
       "id": "54659",
       "wine": "Testamatta",
@@ -17,45 +26,209 @@
     null
   ],
   "Tuesday": [
-    null,
-    null,
-    null,
-    null,
-    null
+    {
+      "id": "2839",
+      "wine": "Ducru Beaucaillou",
+      "vintage": "2000",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 84,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "63449",
+      "wine": "Meursault Clos des B",
+      "vintage": "2011",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 5,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": "65367",
+      "wine": "Lagrange",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 720,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "13024",
+      "wine": "Yquem",
+      "vintage": "2010",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 12,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": "7050",
+      "wine": "Lafite Rothschild",
+      "vintage": "2010",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 12,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 4
+    }
   ],
   "Wednesday": [
-    null,
-    null,
+    {
+      "id": "57312",
+      "wine": "Malescot Saint-Exup\u00e9",
+      "vintage": "2022",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 1896,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": "3821",
+      "wine": "Montrose",
+      "vintage": "2010",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 264,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 1
+    },
     null,
     null,
     null
   ],
   "Thursday": [
-    null,
-    null,
-    null,
-    null,
+    {
+      "id": "57075",
+      "wine": "Suduiraut",
+      "vintage": "2022",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 342,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": null,
+      "wine": "lascombes",
+      "vintage": "2022",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": null,
+      "wine": "Angelus",
+      "vintage": "2022",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": null,
+      "wine": "Lascombes",
+      "vintage": "-2022",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
     null
   ],
   "Friday": [
-    null,
-    null,
-    null,
-    null,
+    {
+      "id": null,
+      "wine": "Screaming Eagle",
+      "vintage": "2021",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": null,
+      "wine": "Takashi",
+      "vintage": "2015",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": null,
+      "wine": "BDX edition",
+      "vintage": "NV",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": "51503",
+      "wine": "Montrose",
+      "vintage": "2019",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 240,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 3
+    },
     null
   ],
   "Saturday": [
     null,
     null,
     null,
-    null,
+    {
+      "id": "7173",
+      "wine": "Lafite Rothschild",
+      "vintage": "1982",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 1,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 3
+    },
     null
   ],
   "Sunday": [
     null,
     null,
     null,
-    null,
+    {
+      "id": "56292",
+      "wine": "Lafleur",
+      "vintage": "2019",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 6,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 3
+    },
     null
   ]
 }

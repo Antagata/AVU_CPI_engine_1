@@ -1,0 +1,22 @@
+/* Schedule Time Display CSS to append */
+.schedule-time {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  font-size: 0.7rem;
+  color: #6b7280;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1px 4px;
+  border-radius: 4px;
+  z-index: 5;
+}
+
+/* Detached view schedule time - larger and more visible */
+#calendar-container.detached .schedule-time {
+  font-size: 1rem !important;
+  padding: 3px 6px !important;
+  border-radius: 6px !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #374151 !important;
+  font-weight: 600 !important;
+}

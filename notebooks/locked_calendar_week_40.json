@@ -1,0 +1,61 @@
+{
+  "Monday": [
+    null,
+    {
+      "id": "56727",
+      "wine": "Champagne Brut Dom P",
+      "vintage": "2013",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 678,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 1
+    },
+    null,
+    null,
+    null
+  ],
+  "Tuesday": [
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "Wednesday": [
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "Thursday": [
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "Friday": [
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "Saturday": [
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "Sunday": [
+    null,
+    null,
+    null,
+    null,
+    null
+  ]
+}

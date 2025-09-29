@@ -578,6 +578,11 @@
     if (item.card_color || item.cardColor) {
       el.dataset.cardColor = item.card_color || item.cardColor;
     }
+    
+    // Reason payload support
+    if (item.reason_payload) {
+      el.dataset.reasonPayload = JSON.stringify(item.reason_payload);
+    }
 
     const isLocked = el.dataset.locked === "true";
     const lockIcon = isLocked ? "fa-lock" : "fa-lock-open";
@@ -587,6 +592,13 @@
     const details = [priceText, stockText].filter(Boolean).join(" • ");
     const lastC = el.dataset.lastCampaign;
     const isCustom = el.dataset.customCard === "true";
+    
+    // Generate reason badges
+    const reasonBadges = generateReasonBadges(item.reason_payload);
+
+    // Generate schedule time display
+    const scheduleTime = item.schedule_time ? formatScheduleTime(item.schedule_time) : '';
+    const scheduleDisplay = scheduleTime ? `<div class="schedule-time">${scheduleTime}</div>` : '';
 
     el.innerHTML = `
       <div class="wine-header">
@@ -604,6 +616,8 @@
         <div>Last campaign: ${lastC || "-"}</div>
         ${isCustom ? '<div><small style="color: #d4af37;">✨ Custom Wine</small></div>' : ''}
       </div>
+      ${reasonBadges}
+      ${scheduleDisplay}
     `;
 
     const ft = (el.dataset.type || "").toLowerCase();
@@ -735,9 +749,20 @@
     ctxMenuEl.className = "context-menu";
     ctxMenuEl.innerHTML = `
       <ul role="menu" aria-label="Wine actions">
+        <li role="menuitem" data-act="duplicate">Duplicate in this week</li>
         <li role="menuitem" data-act="move">Move to week…</li>
         <li role="menuitem" data-act="delete" class="danger">Remove from this week</li>
-        <li role="menuitem" data-act="color">🎨 Change card color</li>
+        <li class="menu-separator"></li>
+        <li class="color-menu-item">
+          <span>Card Color:</span>
+          <div class="color-options">
+            <div class="color-option gold" data-color="gold" title="Gold"></div>
+            <div class="color-option green" data-color="green" title="Green (Default)"></div>
+            <div class="color-option silver" data-color="silver" title="Silver"></div>
+            <div class="color-option white" data-color="white" title="White"></div>
+            <div class="color-option turquoise" data-color="turquoise" title="Turquoise"></div>
+          </div>
+        </li>
       </ul>
     `;
     doc.body.appendChild(ctxMenuEl);
@@ -749,16 +774,22 @@
 
     ctxMenuEl.addEventListener("click", (e) => {
       const li = e.target.closest("li[data-act]");
+      const colorOption = e.target.closest(".color-option");
+      
+      if (colorOption) {
+        // Handle color selection
+        const color = colorOption.dataset.color;
+        applyCardColor(cardEl, color);
+        destroyContextMenu();
+        return;
+      }
+      
       if (!li) return;
       const act = li.dataset.act;
-      const menuRect = ctxMenuEl.getBoundingClientRect();
       destroyContextMenu();
       if (act === "delete") deleteCardFromCalendar(cardEl);
       if (act === "move") openMoveWeekModal(cardEl);
-      if (act === "color") {
-        // Show color context menu at the position of the original menu
-        setTimeout(() => showColorContextMenu(cardEl, menuRect.right + 5, menuRect.top), 0);
-      }
+      if (act === "duplicate") duplicateCardInWeek(cardEl);
     });
 
     setTimeout(() => {
@@ -910,6 +941,80 @@
     persistLockedCalendarState().catch(console.warn);
     persistFullCalendarSnapshot().catch(console.warn);
     recalcAndUpdateGauge({ animate: true });
+  }
+
+  function duplicateCardInWeek(cardEl) {
+    const d = extractWineData(cardEl);
+    const currentDay = d.day;
+    
+    // Find an empty slot in the current week (try all days)
+    let targetBox = null;
+    let targetDay = null;
+    
+    // First, try to find an empty slot in the same day
+    for (let i = 0; i < NUM_SLOTS; i++) {
+      const box = document.querySelector(`.fill-box[data-day="${currentDay}"][data-slot="${i}"]`);
+      if (box && !box.querySelector(".wine-box")) {
+        targetBox = box;
+        targetDay = currentDay;
+        break;
+      }
+    }
+    
+    // If no empty slot in same day, try other days
+    if (!targetBox) {
+      for (const day of DAYS) {
+        if (day === currentDay) continue; // Already checked
+        for (let i = 0; i < NUM_SLOTS; i++) {
+          const box = document.querySelector(`.fill-box[data-day="${day}"][data-slot="${i}"]`);
+          if (box && !box.querySelector(".wine-box")) {
+            targetBox = box;
+            targetDay = day;
+            break;
+          }
+        }
+        if (targetBox) break;
+      }
+    }
+    
+    if (!targetBox) {
+      alert("No empty slots available in this week to duplicate the wine.");
+      return;
+    }
+    
+    // Create a duplicate item object with the same data but generate a new unique ID
+    const duplicateItem = {
+      id: null, // Will be auto-generated in renderWineIntoBox
+      wine: d.name,
+      name: d.name,
+      vintage: d.vintage,
+      full_type: d.full_type || d.type,
+      type: d.type,
+      stock: d.stock,
+      price_tier: d.price_tier,
+      loyalty_level: d.loyalty_level,
+      region_group: d.region_group,
+      match_quality: d.match_quality,
+      avg_cpi_score: d.avg_cpi_score,
+      last_campaign: d.last_campaign,
+      locked: false, // Start as unlocked by default
+      custom_card: d.customCard === "true",
+      card_color: d.cardColor // Preserve the color
+    };
+    
+    // Render the duplicate into the target box
+    renderWineIntoBox(targetBox, duplicateItem, { locked: false });
+    
+    // Update the box state
+    targetBox.classList.remove("empty");
+    targetBox.classList.add("filled");
+    
+    // Persist changes
+    persistLockedCalendarState().catch(console.warn);
+    persistFullCalendarSnapshot().catch(console.warn);
+    recalcAndUpdateGauge({ animate: true });
+    
+    alert(`Wine duplicated to ${targetDay}!`);
   }
 
   function normalizeLocked(locks) {
@@ -1236,52 +1341,58 @@
     const cal = CAL();
     if (cal) { cal.setAttribute("aria-busy", "true"); cal.classList.add("is-busy"); }
 
-    const prevYear = currentYear;
-    const prevWeek = currentWeek;
+    try {
+      const prevYear = currentYear;
+      const prevWeek = currentWeek;
 
-    // Persist locks and snapshots of the *previous* week
-    if (prevYear && prevWeek && (newYear !== prevYear || newWeek !== prevWeek)) {
-      await persistLockedCalendarState(prevYear, prevWeek);
-      await persistFullCalendarSnapshot(prevYear, prevWeek);
+      // Persist locks and snapshots of the *previous* week
+      if (prevYear && prevWeek && (newYear !== prevYear || newWeek !== prevWeek)) {
+        await persistLockedCalendarState(prevYear, prevWeek);
+        await persistFullCalendarSnapshot(prevYear, prevWeek);
+      }
+
+      currentYear = parseInt(newYear, 10);
+      currentWeek = parseInt(newWeek, 10);
+
+      sessionStorage.setItem("selectedYear", String(currentYear));
+      sessionStorage.setItem("selectedWeek", String(currentWeek));
+      currentActiveWeek = String(currentWeek); // keep legacy var in sync
+
+      clearCalendar();
+      buildCalendarSkeleton();
+      wireCalendarDelegation();
+
+      await loadCampaignIndex().catch(() => {});
+
+      // First try to load from local snapshot
+      const snap = loadFullCalendarSnapshot(currentYear, currentWeek);
+      if (snap) {
+        renderFullFromData(snap);
+      } else {
+        // Fallback to server fetch for locked and schedule data
+        const [locked, calendar, leads] = await Promise.all([
+          fetchLockedForWeek(currentWeek, currentYear),
+          fetchDefaultScheduleForWeek(currentWeek, currentYear),
+          getLeadsForWeek(currentWeek, currentYear)
+        ]);
+
+        if (locked && Object.keys(locked).length) renderLockedOnlyFromData(locked);
+        if (calendar) { renderDefaultScheduleFromData(calendar); fillEmptySlotsFromPool(calendar); }
+        if (leads) renderLeadsFromData(leads);
+
+        // Persist newly fetched data locally
+        await persistLockedCalendarState(currentYear, currentWeek);
+        await persistFullCalendarSnapshot(currentYear, currentWeek);
+      }
+
+      recalcAndUpdateGauge({ animate: false });
+    } catch (error) {
+      console.error("Error during week change:", error);
+    } finally {
+      // Always clear busy state, even if there was an error
+      if (cal) { cal.removeAttribute("aria-busy"); cal.classList.remove("is-busy"); }
+      isWeekLoading = false;
     }
-
-    currentYear = parseInt(newYear, 10);
-    currentWeek = parseInt(newWeek, 10);
-
-    sessionStorage.setItem("selectedYear", String(currentYear));
-    sessionStorage.setItem("selectedWeek", String(currentWeek));
-    currentActiveWeek = String(currentWeek); // keep legacy var in sync
-
-    clearCalendar();
-    buildCalendarSkeleton();
-    wireCalendarDelegation();
-
-    await loadCampaignIndex().catch(() => {});
-
-    // First try to load from local snapshot
-    const snap = loadFullCalendarSnapshot(currentYear, currentWeek);
-    if (snap) {
-      renderFullFromData(snap);
-    } else {
-      // Fallback to server fetch for locked and schedule data
-      const [locked, calendar, leads] = await Promise.all([
-        fetchLockedForWeek(currentWeek, currentYear),
-        fetchDefaultScheduleForWeek(currentWeek, currentYear),
-        getLeadsForWeek(currentWeek, currentYear)
-      ]);
-
-      if (locked && Object.keys(locked).length) renderLockedOnlyFromData(locked);
-      if (calendar) { renderDefaultScheduleFromData(calendar); fillEmptySlotsFromPool(calendar); }
-      if (leads) renderLeadsFromData(leads);
-
-      // Persist newly fetched data locally
-      await persistLockedCalendarState(currentYear, currentWeek);
-      await persistFullCalendarSnapshot(currentYear, currentWeek);
-    }
-
-    recalcAndUpdateGauge({ animate: false });
-    if (cal) { cal.removeAttribute("aria-busy"); cal.classList.remove("is-busy"); }
-    isWeekLoading = false;
   }
 
   // Helper for week selector (keeps current year)
@@ -1404,8 +1515,6 @@
   
   function closeQuickAdd() { 
     qa.overlay?.classList.add("hidden");
-    // Hide any color context menu that might be open
-    hideColorContextMenu();
   }
   window.openQuickAdd = openQuickAdd;
 
@@ -1485,73 +1594,203 @@
       }
     }
 
-    const cell = document.querySelector(`.fill-box[data-day="${day}"][data-slot="${slot}"]`);
+    // Close Quick Add and show Reason Dialog (card will be rendered after reason selection)
+    closeQuickAdd();
+    showReasonDialog(item, day, slot, lockIt);
+  }
+
+  // ===== Reason & Tags Dialog =====
+  let pendingCardData = null;
+  let pendingCardDay = null;
+  let pendingCardSlot = null;
+  let pendingCardLocked = false;
+
+  function showReasonDialog(item, day, slot, lockIt) {
+    pendingCardData = item;
+    pendingCardDay = day;
+    pendingCardSlot = slot;
+    pendingCardLocked = lockIt;
+    
+    const dialog = document.getElementById('reasonDialog');
+    const wineInfo = document.getElementById('reason-wine-info');
+    const reasonSelect = document.getElementById('reason-select');
+    const winnerSection = document.getElementById('winner-window-section');
+    const description = document.getElementById('reason-description');
+    const charCounter = document.getElementById('char-counter');
+    
+    if (!dialog) return;
+    
+    // Set wine info
+    wineInfo.textContent = `${item.wine || item.name} (${item.vintage}) → ${day}, slot ${Number(slot) + 1}`;
+    
+    // Reset form
+    reasonSelect.value = 'Normal';
+    winnerSection.classList.add('hidden');
+    description.value = '';
+    charCounter.textContent = '0';
+    
+    // Reset schedule time
+    const scheduleInput = document.getElementById('schedule-time');
+    if (scheduleInput) scheduleInput.value = '';
+    
+    // Clear all radio buttons
+    document.querySelectorAll('input[name="winner-window"]').forEach(radio => radio.checked = false);
+    
+    // Clear tag selections
+    document.querySelectorAll('.tag-btn').forEach(btn => {
+      btn.classList.remove('bg-blue-500', 'text-white');
+      btn.classList.add('border-gray-300', 'hover:bg-gray-50');
+    });
+    
+    dialog.classList.remove('hidden');
+  }
+
+  function closeReasonDialog() {
+    const dialog = document.getElementById('reasonDialog');
+    if (dialog) dialog.classList.add('hidden');
+    pendingCardData = null;
+    pendingCardDay = null;
+    pendingCardSlot = null;
+    pendingCardLocked = false;
+  }
+
+  async function saveReasonAndPlaceCard() {
+    if (!pendingCardData) return;
+    
+    const reasonSelect = document.getElementById('reason-select');
+    const description = document.getElementById('reason-description');
+    const reason = reasonSelect.value;
+    
+    let winnerWindow = null;
+    if (reason === 'Winner') {
+      const checkedRadio = document.querySelector('input[name="winner-window"]:checked');
+      if (!checkedRadio) {
+        alert('Please select a winner window for Winner reason.');
+        return;
+      }
+      winnerWindow = parseInt(checkedRadio.value);
+    }
+    
+    // Get selected tags
+    const tags = [];
+    document.querySelectorAll('.tag-btn.bg-blue-500').forEach(btn => {
+      tags.push(btn.dataset.tag);
+    });
+    
+    // Get schedule time
+    const scheduleInput = document.getElementById('schedule-time');
+    const scheduleTime = scheduleInput ? scheduleInput.value : '';
+    
+    // Create reason payload
+    const reasonPayload = {
+      reason,
+      winner_window: winnerWindow,
+      description: description.value.trim(),
+      tags
+    };
+    
+    // Add schedule time to item if provided
+    if (scheduleTime) {
+      itemWithReason.schedule_time = scheduleTime;
+    }
+    
+    // Add reason payload to item
+    const itemWithReason = {
+      ...pendingCardData,
+      reason_payload: reasonPayload
+    };
+    
+    // Now place the card with reason data
+    const cell = document.querySelector(`.fill-box[data-day="${pendingCardDay}"][data-slot="${pendingCardSlot}"]`);
     if (cell) {
       const prevAuto = cell.querySelector('.wine-box:not([data-locked="true"])');
       if (prevAuto) prevAuto.remove();
-      renderWineIntoBox(cell, item, { locked: lockIt });
+      renderWineIntoBox(cell, itemWithReason, { locked: pendingCardLocked });
     }
+    
     await persistLockedCalendarState();
     await persistFullCalendarSnapshot();
     recalcAndUpdateGauge({ animate: true });
-    await notifySelectedWine({ ...item, day, slot }).catch(() => {});
-    closeQuickAdd();
+    await notifySelectedWine({ ...itemWithReason, day: pendingCardDay, slot: pendingCardSlot }).catch(() => {});
+    
+    closeReasonDialog();
   }
 
-  // ===== Color Context Menu =====
-  let colorContextMenuEl = null;
-  let currentColorCard = null;
-
-  function createColorContextMenu() {
-    const menu = document.createElement('div');
-    menu.className = 'color-context-menu hidden';
-    menu.innerHTML = `
-      <div class="color-option gold" data-color="gold" title="Gold"></div>
-      <div class="color-option green" data-color="green" title="Green (Default)"></div>
-      <div class="color-option silver" data-color="silver" title="Silver"></div>
-      <div class="color-option white" data-color="white" title="White"></div>
-    `;
-    
-    menu.addEventListener('click', (e) => {
-      const colorOption = e.target.closest('.color-option');
-      if (colorOption && currentColorCard) {
-        const color = colorOption.dataset.color;
-        applyCardColor(currentColorCard, color);
-        hideColorContextMenu();
-      }
-    });
-    
-    document.body.appendChild(menu);
-    return menu;
+  function formatScheduleTime(timeString) {
+    if (!timeString) return '';
+    // If it's already in HH:MM format, return as is
+    if (timeString.match(/^\d{1,2}:\d{2}$/)) {
+      return timeString;
+    }
+    // Try to parse as datetime and extract time
+    try {
+      const date = new Date(timeString);
+      return date.toLocaleTimeString('en-US', { 
+        hour: 'numeric', 
+        minute: '2-digit',
+        hour12: false 
+      });
+    } catch (e) {
+      return timeString; // Return original if can't parse
+    }
   }
 
-  function showColorContextMenu(card, x, y) {
-    if (!colorContextMenuEl) {
-      colorContextMenuEl = createColorContextMenu();
+  function generateReasonBadges(reasonPayload) {
+    if (!reasonPayload || reasonPayload.reason === 'Normal') {
+      return '';
     }
     
-    currentColorCard = card;
-    colorContextMenuEl.style.left = `${x}px`;
-    colorContextMenuEl.style.top = `${y}px`;
-    colorContextMenuEl.classList.remove('hidden');
+    let reasonBadge = '';
+    let tagBadges = '';
     
-    // Hide menu when clicking elsewhere
-    const hideOnClick = (e) => {
-      if (!colorContextMenuEl.contains(e.target)) {
-        hideColorContextMenu();
-        document.removeEventListener('click', hideOnClick);
-      }
+    // Reason badge with emoji
+    const reasonEmojis = {
+      'Recall': '↩️',
+      'Horeca': '🏨',
+      'EnPrim': '🎯',
+      'Winner': '🏆'
     };
-    setTimeout(() => document.addEventListener('click', hideOnClick), 0);
-  }
-
-  function hideColorContextMenu() {
-    if (colorContextMenuEl) {
-      colorContextMenuEl.classList.add('hidden');
+    
+    const reasonEmoji = reasonEmojis[reasonPayload.reason] || '';
+    let reasonText = reasonPayload.reason;
+    
+    if (reasonPayload.reason === 'Winner' && reasonPayload.winner_window) {
+      reasonText += ` ${reasonPayload.winner_window}d`;
     }
-    currentColorCard = null;
+    
+    reasonBadge = `<div class="reason-container"><span class="reason-badge" title="${reasonPayload.description || ''}">${reasonEmoji} ${reasonText}</span></div>`;
+    
+    // Tags badges
+    if (reasonPayload.tags && reasonPayload.tags.length > 0) {
+      const tagEmojis = {
+        'CH': 'CH', // Switzerland - fallback to text if flags don't work
+        'EU': 'EU', // Europe - fallback to text if flags don't work
+        'W': '🌍', // World emoji usually works better than flag emojis
+        'BDG': '⬇️',
+        'BIG': '🅱️'
+      };
+      
+      const tags = reasonPayload.tags.map(tag => {
+        const emoji = tagEmojis[tag] || '';
+        if (tag === 'W') {
+          return `<span class="tag-badge">${emoji}</span>`; // Only show world emoji
+        }
+        if (tag === 'CH') {
+          return `<span class="tag-badge tag-ch">CH</span>`; // Special styling for Switzerland
+        }
+        if (tag === 'EU') {
+          return `<span class="tag-badge tag-eu">EU</span>`; // Special styling for EU
+        }
+        return `<span class="tag-badge">${emoji}${tag}</span>`;
+      }).join('');
+      
+      tagBadges = `<div class="tags-container">${tags}</div>`;
+    }
+    
+    return reasonBadge + tagBadges;
   }
 
+  // ===== Color System =====
   function applyCardColor(card, color) {
     // Remove existing color classes
     card.classList.remove('color-gold', 'color-green', 'color-silver', 'color-white');
@@ -1830,7 +2069,7 @@
   }
   async function notifySelectedWine(selection) { try { await postJSON(URLS.selectedWine, selection || {}); } catch (e) {} }
   function extractWineData(el) {
-    return {
+    const data = {
       id: el.dataset.id || null,
       name: el.dataset.name || "",
       wine: el.dataset.name || "",
@@ -1847,6 +2086,17 @@
       locked: el.dataset.locked === "true",
       last_campaign: el.dataset.lastCampaign || ""
     };
+    
+    // Add reason payload if present
+    if (el.dataset.reasonPayload) {
+      try {
+        data.reason_payload = JSON.parse(el.dataset.reasonPayload);
+      } catch (e) {
+        console.warn("Failed to parse reason payload:", e);
+      }
+    }
+    
+    return data;
   }
   function toggleSelectWine(el) {
     if (selectedWineEl === el) {
@@ -2011,9 +2261,54 @@
   // ===== Events =====
   document.addEventListener("DOMContentLoaded", async () => {
     await boot();
+    
+    // Safety: ensure calendar is not stuck in busy state on page load
+    const cal = CAL();
+    if (cal) { 
+      cal.removeAttribute("aria-busy"); 
+      cal.classList.remove("is-busy"); 
+    }
 
     $("#startEngineBtn")?.addEventListener("click", startFullEngine);
     $("#loadScheduleBtn")?.addEventListener("click", loadNewSchedule);
+
+    // Reason Dialog event listeners
+    $("#reasonDialog-close")?.addEventListener("click", closeReasonDialog);
+    $("#reason-cancel")?.addEventListener("click", closeReasonDialog);
+    $("#reason-save")?.addEventListener("click", saveReasonAndPlaceCard);
+    
+    // Reason select change handler for Winner window
+    $("#reason-select")?.addEventListener("change", (e) => {
+      const winnerSection = $("#winner-window-section");
+      if (e.target.value === "Winner") {
+        winnerSection?.classList.remove("hidden");
+      } else {
+        winnerSection?.classList.add("hidden");
+      }
+    });
+    
+    // Description character counter
+    $("#reason-description")?.addEventListener("input", (e) => {
+      const counter = $("#char-counter");
+      if (counter) counter.textContent = e.target.value.length;
+    });
+    
+    // Tag button handlers
+    document.querySelectorAll('.tag-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('bg-blue-500');
+        btn.classList.toggle('text-white');
+        btn.classList.toggle('border-gray-300');
+        btn.classList.toggle('hover:bg-gray-50');
+      });
+    });
+    
+    // Close dialog on backdrop click
+    $("#reasonDialog")?.addEventListener("click", (e) => {
+      if (e.target.id === "reasonDialog") {
+        closeReasonDialog();
+      }
+    });
 
     // Generate Offer (AUTONOMOUS_AVU_OMT_3.ipynb)
     $("#generateOfferBtn")?.addEventListener("click", async (e) => {
