@@ -355,6 +355,118 @@ input[type="range"]::-moz-range-thumb {
 .badge-low { background-color: #9E9EDE; color: #fff; }
 
 /* =========================
+   Custom Card Colors
+   ========================= */
+.wine-box.color-gold {
+  background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+  color: #2d3748 !important;
+  border-color: #B8860B !important;
+}
+.wine-box.color-gold * {
+  color: #2d3748 !important;
+}
+.wine-box.color-green {
+  background: #f9f9f9 !important; /* default color */
+  color: #333 !important;
+  border-color: #ddd !important;
+}
+.wine-box.color-silver {
+  background: linear-gradient(135deg, #C0C0C0, #A9A9A9) !important;
+  color: #2d3748 !important;
+  border-color: #708090 !important;
+}
+.wine-box.color-silver * {
+  color: #2d3748 !important;
+}
+.wine-box.color-white {
+  background: #FFFFFF !important;
+  color: #2d3748 !important;
+  border-color: #E5E7EB !important;
+  box-shadow: 0 0 8px rgba(0,0,0,0.15) !important;
+}
+.wine-box.color-white * {
+  color: #2d3748 !important;
+}
+
+/* Custom card indicator */
+.wine-box.custom-card::before {
+  content: "✨";
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+.wine-box {
+  position: relative; /* for custom card indicator */
+}
+
+/* =========================
+   Color Context Menu
+   ========================= */
+.color-context-menu {
+  position: absolute;
+  background: #2d3748;
+  border: 1px solid #6b4d3a;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 1000;
+  display: flex;
+  gap: 6px;
+}
+.color-option {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #4a5568;
+  transition: all 0.2s ease;
+}
+.color-option:hover {
+  transform: scale(1.1);
+  border-color: #d4af37;
+}
+.color-option.gold { background: linear-gradient(135deg, #FFD700, #FFA500); }
+.color-option.green { background: #f9f9f9; }
+.color-option.silver { background: linear-gradient(135deg, #C0C0C0, #A9A9A9); }
+.color-option.white { background: #FFFFFF; border-color: #E5E7EB; }
+
+/* =========================
+   Quick Add Enhancements
+   ========================= */
+.qa-custom-section {
+  margin: 12px 0;
+  padding: 8px;
+  background: rgba(45, 55, 72, 0.3);
+  border-radius: 6px;
+  border: 1px solid #4a5568;
+}
+.qa-custom-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #e2e8f0;
+  cursor: pointer;
+}
+.qa-custom-checkbox input[type="checkbox"] {
+  margin: 0;
+  accent-color: #d4af37;
+}
+.qa-custom-fields {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #4a5568;
+}
+.qa-custom-fields .qa-l {
+  margin-top: 8px;
+}
+.qa-custom-fields .qa-i {
+  margin-bottom: 8px;
+}
+
+/* =========================
    Gauge (Audio-plugin style)
    ========================= */
 .unified-gauge-section {

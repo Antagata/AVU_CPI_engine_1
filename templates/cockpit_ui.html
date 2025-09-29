@@ -398,12 +398,139 @@
       />
       <ul id="qa-suggestions" class="qa-s" role="listbox" aria-label="Wine suggestions"></ul>
 
-      <label class="qa-l" for="qa-vintage">Vintage</label>
-      <select id="qa-vintage" class="qa-i" title="Select vintage"></select>
+      <div class="qa-custom-section">
+        <label class="qa-custom-checkbox">
+          <input type="checkbox" id="qa-custom-mode" />
+          <span>Create custom wine (not in stock)</span>
+        </label>
+      </div>
+
+      <div id="qa-vintage-section">
+        <label class="qa-l" for="qa-vintage">Vintage</label>
+        <select id="qa-vintage" class="qa-i" title="Select vintage"></select>
+      </div>
+
+      <div id="qa-custom-fields" class="qa-custom-fields hidden">
+        <label class="qa-l" for="qa-custom-vintage">Custom Vintage</label>
+        <input
+          id="qa-custom-vintage"
+          class="qa-i"
+          type="text"
+          placeholder="e.g., 2020, NV"
+          title="Enter vintage"
+        />
+        
+        <label class="qa-l" for="qa-custom-type">Wine Type (optional)</label>
+        <input
+          id="qa-custom-type"
+          class="qa-i"
+          type="text"
+          placeholder="e.g., Red Wine, Champagne"
+          title="Enter wine type"
+        />
+        
+        <label class="qa-l" for="qa-custom-region">Region (optional)</label>
+        <input
+          id="qa-custom-region"
+          class="qa-i"
+          type="text"
+          placeholder="e.g., Bordeaux, Tuscany"
+          title="Enter region"
+        />
+      </div>
 
       <div class="qa-actions">
         <button id="qa-add-lock" class="qa-btn primary" type="button" title="Add and lock">Add &amp; Lock</button>
         <button id="qa-add-unlock" class="qa-btn" type="button" title="Add unlocked">Add (unlocked)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= Reason & Tags Modal ================= -->
+  <div id="reasonDialog" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold text-gray-800">📝 Add Reason & Tags</h3>
+        <button id="reasonDialog-close" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+      </div>
+      
+      <!-- Wine Info -->
+      <div class="mb-4 p-3 bg-gray-50 rounded-md">
+        <div class="text-sm text-gray-600">Adding to:</div>
+        <div id="reason-wine-info" class="font-medium text-gray-800"></div>
+      </div>
+
+      <!-- Reason Selection -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Reason *</label>
+        <select id="reason-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <option value="Normal">Normal</option>
+          <option value="Recall">Recall</option>
+          <option value="Horeca">Horeca</option>
+          <option value="EnPrim">EnPrim</option>
+          <option value="Winner">Winner (last N days)</option>
+        </select>
+      </div>
+
+      <!-- Winner Window (conditional) -->
+      <div id="winner-window-section" class="mb-4 hidden">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Winner Window *</label>
+        <div class="flex gap-2">
+          <label class="flex items-center">
+            <input type="radio" name="winner-window" value="7" class="mr-1"> 7 days
+          </label>
+          <label class="flex items-center">
+            <input type="radio" name="winner-window" value="14" class="mr-1"> 14 days
+          </label>
+          <label class="flex items-center">
+            <input type="radio" name="winner-window" value="30" class="mr-1"> 30 days
+          </label>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Description (optional)</label>
+        <div class="relative">
+          <textarea id="reason-description" maxlength="80" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="2" placeholder="Brief description..."></textarea>
+          <div class="text-xs text-gray-500 mt-1">
+            <span id="char-counter">0</span>/80 characters
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule Time -->
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Schedule Time (optional)</label>
+        <input type="time" id="schedule-time" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" title="Select schedule time" placeholder="e.g., 17:00">
+      </div>
+
+      <!-- Tags -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Tags (optional)</label>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" class="tag-btn px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors" data-tag="CH">
+            CH
+          </button>
+          <button type="button" class="tag-btn px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors" data-tag="EU">
+            EU
+          </button>
+          <button type="button" class="tag-btn px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors" data-tag="W">
+            🌍
+          </button>
+          <button type="button" class="tag-btn px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors" data-tag="BDG">
+            ⬇️ BDG
+          </button>
+          <button type="button" class="tag-btn px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors" data-tag="BIG">
+            🅱️ BIG
+          </button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-2 justify-end">
+        <button id="reason-cancel" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">Cancel</button>
+        <button id="reason-save" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Save</button>
       </div>
     </div>
   </div>

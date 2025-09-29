@@ -568,6 +568,16 @@
     el.dataset.matchQuality = item.match_quality || "";
     el.dataset.cpiScore = item.avg_cpi_score ?? item.cpi_score ?? "";
     el.dataset.lastCampaign = (item.last_campaign_date || item.last_campaign || item.lastCampaign || "").toString();
+    
+    // Custom card support
+    if (item.custom_card) {
+      el.dataset.customCard = "true";
+    }
+    
+    // Card color support
+    if (item.card_color || item.cardColor) {
+      el.dataset.cardColor = item.card_color || item.cardColor;
+    }
 
     const isLocked = el.dataset.locked === "true";
     const lockIcon = isLocked ? "fa-lock" : "fa-lock-open";
@@ -576,6 +586,7 @@
     const stockText = el.dataset.stock ? `Stock: ${el.dataset.stock}` : "";
     const details = [priceText, stockText].filter(Boolean).join(" • ");
     const lastC = el.dataset.lastCampaign;
+    const isCustom = el.dataset.customCard === "true";
 
     el.innerHTML = `
       <div class="wine-header">
@@ -591,20 +602,36 @@
       </div>
       <div class="wine-submeta">
         <div>Last campaign: ${lastC || "-"}</div>
+        ${isCustom ? '<div><small style="color: #d4af37;">✨ Custom Wine</small></div>' : ''}
       </div>
     `;
 
     const ft = (el.dataset.type || "").toLowerCase();
     const nameLc = (el.dataset.name || "").toLowerCase();
-    const typeClass = (() => {
-      if (ft.includes("spark") || ft.includes("champ") || ft.includes("spumante") || ft.includes("cava") || ft.includes("prosecco")) return "wine-type-sparkling";
-      if (ft.includes("rose") || ft.includes("rosé")) return "wine-type-rose";
-      if (ft.includes("dessert") || ft.includes("sweet") || ft.includes("sauternes") || ft.includes("port") || ft.includes("sherry") || nameLc.includes("late harvest")) return "wine-type-dessert";
-      if (ft.includes("white") || ft.includes("blanc")) return "wine-type-white";
-      if (ft.includes("red") || ft.includes("rouge") || nameLc.includes("bordeaux")) return "wine-type-red";
-      return "";
-    })();
-    if (typeClass) el.classList.add(typeClass);
+    
+    // Apply custom card class if needed
+    if (isCustom) {
+      el.classList.add("custom-card");
+    }
+    
+    // Apply wine type class (only if no custom color is set)
+    const customColor = el.dataset.cardColor;
+    if (!customColor) {
+      const typeClass = (() => {
+        if (ft.includes("spark") || ft.includes("champ") || ft.includes("spumante") || ft.includes("cava") || ft.includes("prosecco")) return "wine-type-sparkling";
+        if (ft.includes("rose") || ft.includes("rosé")) return "wine-type-rose";
+        if (ft.includes("dessert") || ft.includes("sweet") || ft.includes("sauternes") || ft.includes("port") || ft.includes("sherry") || nameLc.includes("late harvest")) return "wine-type-dessert";
+        if (ft.includes("white") || ft.includes("blanc")) return "wine-type-white";
+        if (ft.includes("red") || ft.includes("rouge") || nameLc.includes("bordeaux")) return "wine-type-red";
+        return "";
+      })();
+      if (typeClass) el.classList.add(typeClass);
+    } else {
+      // Apply custom color class
+      if (customColor !== 'green') { // green is default
+        el.classList.add(`color-${customColor}`);
+      }
+    }
 
     // A11y: focusable + keyboard select
     el.setAttribute("tabindex", "0");
@@ -710,6 +737,7 @@
       <ul role="menu" aria-label="Wine actions">
         <li role="menuitem" data-act="move">Move to week…</li>
         <li role="menuitem" data-act="delete" class="danger">Remove from this week</li>
+        <li role="menuitem" data-act="color">🎨 Change card color</li>
       </ul>
     `;
     doc.body.appendChild(ctxMenuEl);
@@ -723,9 +751,14 @@
       const li = e.target.closest("li[data-act]");
       if (!li) return;
       const act = li.dataset.act;
+      const menuRect = ctxMenuEl.getBoundingClientRect();
       destroyContextMenu();
       if (act === "delete") deleteCardFromCalendar(cardEl);
       if (act === "move") openMoveWeekModal(cardEl);
+      if (act === "color") {
+        // Show color context menu at the position of the original menu
+        setTimeout(() => showColorContextMenu(cardEl, menuRect.right + 5, menuRect.top), 0);
+      }
     });
 
     setTimeout(() => {
@@ -908,7 +941,9 @@
           price_tier: card.dataset.priceTier || undefined,
           match_quality: card.dataset.matchQuality || undefined,
           avg_cpi_score: card.dataset.cpiScore || undefined,
-          locked: card.dataset.locked === "true"
+          locked: card.dataset.locked === "true",
+          custom_card: card.dataset.customCard === "true" || undefined,
+          card_color: card.dataset.cardColor || undefined
         });
       }
       out[day] = slots;
@@ -947,7 +982,9 @@
           stock: Number(card.dataset.stock || 0),
           price_tier: card.dataset.priceTier || undefined,
           locked: true,
-          slot: idx
+          slot: idx,
+          custom_card: card.dataset.customCard === "true" || undefined,
+          card_color: card.dataset.cardColor || undefined
         });
       });
       out[day] = slots;
@@ -1253,7 +1290,12 @@
   }
 
   // ===== Quick Add Popover =====
-  const qa = { overlay: null, label: null, input: null, list: null, vintage: null, lockBtn: null, unlockBtn: null, closeBtn: null };
+  const qa = { 
+    overlay: null, label: null, input: null, list: null, vintage: null, 
+    lockBtn: null, unlockBtn: null, closeBtn: null,
+    customMode: null, vintageSection: null, customFields: null,
+    customVintage: null, customType: null, customRegion: null
+  };
   let qaCtx = { day: null, slot: null, catalogHit: null };
 
   function wireQuickAdd() {
@@ -1265,9 +1307,39 @@
     qa.lockBtn = $("#qa-add-lock");
     qa.unlockBtn = $("#qa-add-unlock");
     qa.closeBtn = $("#qa-close");
+    qa.customMode = $("#qa-custom-mode");
+    qa.vintageSection = $("#qa-vintage-section");
+    qa.customFields = $("#qa-custom-fields");
+    qa.customVintage = $("#qa-custom-vintage");
+    qa.customType = $("#qa-custom-type");
+    qa.customRegion = $("#qa-custom-region");
+    
     if (!qa.overlay) return;
+    
     qa.closeBtn?.addEventListener("click", closeQuickAdd);
+    
+    // Custom mode toggle
+    qa.customMode?.addEventListener("change", (e) => {
+      const isCustom = e.target.checked;
+      if (isCustom) {
+        qa.vintageSection?.classList.add("hidden");
+        qa.customFields?.classList.remove("hidden");
+        qa.list.innerHTML = "";
+        qa.input.placeholder = "Enter custom wine name...";
+      } else {
+        qa.vintageSection?.classList.remove("hidden");
+        qa.customFields?.classList.add("hidden");
+        qa.input.placeholder = "Search wine name…";
+      }
+    });
+    
     qa.input?.addEventListener("input", () => {
+      // Skip catalog search if in custom mode
+      if (qa.customMode?.checked) {
+        qa.list.innerHTML = "";
+        qa.vintage.innerHTML = "";
+        return;
+      }
       const q = qa.input.value.trim();
       if (!q) { qa.list.innerHTML = ""; qa.vintage.innerHTML = ""; return; }
       clearTimeout(qa.input._t);
@@ -1319,28 +1391,68 @@
     qa.input.value = "";
     qa.list.innerHTML = "";
     qa.vintage.innerHTML = "";
+    qa.customMode.checked = false;
+    qa.customVintage.value = "";
+    qa.customType.value = "";
+    qa.customRegion.value = "";
+    qa.vintageSection?.classList.remove("hidden");
+    qa.customFields?.classList.add("hidden");
+    qa.input.placeholder = "Search wine name…";
     qa.overlay.classList.remove("hidden");
     setTimeout(() => qa.input?.focus(), 20);
   }
-  function closeQuickAdd() { qa.overlay?.classList.add("hidden"); }
+  
+  function closeQuickAdd() { 
+    qa.overlay?.classList.add("hidden");
+    // Hide any color context menu that might be open
+    hideColorContextMenu();
+  }
   window.openQuickAdd = openQuickAdd;
 
   async function confirmPlacement(lockIt) {
     const day = qaCtx.day, slot = qaCtx.slot;
     const wine = qa.input.value.trim();
-    const vintage = (qa.vintage.value || "NV").trim();
     if (!day || slot == null || !wine) return;
-    const found = (qaCtx.catalogHit && qaCtx.catalogHit.wine === wine) ? qaCtx.catalogHit : null;
-    const id = found?.ids ? (found.ids[vintage] || null) : null;
+    
+    const isCustomMode = qa.customMode?.checked;
+    let vintage, found, id, item;
+    
+    if (isCustomMode) {
+      // Custom card creation
+      vintage = (qa.customVintage.value || "NV").trim();
+      const customType = qa.customType.value.trim() || "Custom Wine";
+      const customRegion = qa.customRegion.value.trim() || "Unknown";
+      
+      id = null; // Custom cards don't have IDs from catalog
+      found = null;
+      
+      item = {
+        id: null,
+        wine,
+        vintage,
+        full_type: customType,
+        region_group: customRegion,
+        avg_cpi_score: 0,
+        match_quality: lockIt ? "Locked" : "Auto",
+        locked: lockIt,
+        custom_card: true // Mark as custom
+      };
+    } else {
+      // Regular catalog search
+      vintage = (qa.vintage.value || "NV").trim();
+      found = (qaCtx.catalogHit && qaCtx.catalogHit.wine === wine) ? qaCtx.catalogHit : null;
+      id = found?.ids ? (found.ids[vintage] || null) : null;
+      
+      item = {
+        id, wine, vintage,
+        full_type: found?.full_type, region_group: found?.region_group,
+        avg_cpi_score: 0, match_quality: lockIt ? "Locked" : "Auto", locked: lockIt
+      };
+    }
+    
     const k = makeKey(id || wine, vintage, wine);
     const keys = collectCurrentKeys();
     if (keys.has(k)) { alert("That wine & vintage already exists in this week."); return; }
-    
-    let item = {
-      id, wine, vintage,
-      full_type: found?.full_type, region_group: found?.region_group,
-      avg_cpi_score: 0, match_quality: lockIt ? "Locked" : "Auto", locked: lockIt
-    };
 
     // If we have an ID, fetch full card data including stock and last_campaign_date
     if (id) {
@@ -1384,6 +1496,77 @@
     recalcAndUpdateGauge({ animate: true });
     await notifySelectedWine({ ...item, day, slot }).catch(() => {});
     closeQuickAdd();
+  }
+
+  // ===== Color Context Menu =====
+  let colorContextMenuEl = null;
+  let currentColorCard = null;
+
+  function createColorContextMenu() {
+    const menu = document.createElement('div');
+    menu.className = 'color-context-menu hidden';
+    menu.innerHTML = `
+      <div class="color-option gold" data-color="gold" title="Gold"></div>
+      <div class="color-option green" data-color="green" title="Green (Default)"></div>
+      <div class="color-option silver" data-color="silver" title="Silver"></div>
+      <div class="color-option white" data-color="white" title="White"></div>
+    `;
+    
+    menu.addEventListener('click', (e) => {
+      const colorOption = e.target.closest('.color-option');
+      if (colorOption && currentColorCard) {
+        const color = colorOption.dataset.color;
+        applyCardColor(currentColorCard, color);
+        hideColorContextMenu();
+      }
+    });
+    
+    document.body.appendChild(menu);
+    return menu;
+  }
+
+  function showColorContextMenu(card, x, y) {
+    if (!colorContextMenuEl) {
+      colorContextMenuEl = createColorContextMenu();
+    }
+    
+    currentColorCard = card;
+    colorContextMenuEl.style.left = `${x}px`;
+    colorContextMenuEl.style.top = `${y}px`;
+    colorContextMenuEl.classList.remove('hidden');
+    
+    // Hide menu when clicking elsewhere
+    const hideOnClick = (e) => {
+      if (!colorContextMenuEl.contains(e.target)) {
+        hideColorContextMenu();
+        document.removeEventListener('click', hideOnClick);
+      }
+    };
+    setTimeout(() => document.addEventListener('click', hideOnClick), 0);
+  }
+
+  function hideColorContextMenu() {
+    if (colorContextMenuEl) {
+      colorContextMenuEl.classList.add('hidden');
+    }
+    currentColorCard = null;
+  }
+
+  function applyCardColor(card, color) {
+    // Remove existing color classes
+    card.classList.remove('color-gold', 'color-green', 'color-silver', 'color-white');
+    
+    // Add new color class
+    if (color !== 'green') { // green is default, no class needed
+      card.classList.add(`color-${color}`);
+    }
+    
+    // Store color in dataset for persistence
+    card.dataset.cardColor = color;
+    
+    // Persist the change
+    persistFullCalendarSnapshot();
+    persistLockedCalendarState();
   }
 
   // ===== Actions (runs) =====
