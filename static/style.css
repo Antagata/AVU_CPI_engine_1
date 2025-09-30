@@ -387,6 +387,14 @@ input[type="range"]::-moz-range-thumb {
 .wine-box.color-white * {
   color: #2d3748 !important;
 }
+.wine-box.color-turquoise {
+  background: linear-gradient(135deg, #40E0D0, #20B2AA) !important;
+  color: #2d3748 !important;
+  border-color: #008B8B !important;
+}
+.wine-box.color-turquoise * {
+  color: #2d3748 !important;
+}
 
 /* Custom card indicator */
 .wine-box.custom-card::before {
@@ -431,6 +439,66 @@ input[type="range"]::-moz-range-thumb {
 .color-option.green { background: #f9f9f9; }
 .color-option.silver { background: linear-gradient(135deg, #C0C0C0, #A9A9A9); }
 .color-option.white { background: #FFFFFF; border-color: #E5E7EB; }
+.color-option.turquoise { background: linear-gradient(135deg, #40E0D0, #20B2AA); }
+
+/* Time selection menu item */
+.time-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  list-style: none;
+}
+
+.time-menu-item span {
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  margin-right: 12px;
+}
+
+.time-select {
+  background: #4a5568;
+  color: #e2e8f0;
+  border: 1px solid #6b4d3a;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  min-width: 80px;
+}
+
+.time-select:hover {
+  background: #5a6578;
+}
+
+.time-select:focus {
+  outline: none;
+  border-color: #d4af37;
+}
+
+/* Duplicate dialog color options */
+#duplicateDialog .color-option {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+#duplicateDialog .color-option:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+#duplicateDialog .color-option.selected {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* =========================
+   Quick Add Enhancements
+   ========================= */
 
 /* =========================
    Quick Add Enhancements
@@ -589,6 +657,116 @@ input[type="range"]::-moz-range-thumb {
 }
 #calendar-container.detached .calendar-grid { gap: 12px; }
 
+/* Detached mode wine cards - simplified layout for visibility from 7 meters */
+#calendar-container.detached .wine-box {
+  padding: 8px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative; /* For absolute positioning of reason badges */
+}
+
+/* Hide unnecessary elements in detached mode but keep reason/tags visible */
+#calendar-container.detached .wine-details,
+#calendar-container.detached .badge,
+#calendar-container.detached .wine-submeta {
+  display: none !important;
+}
+
+/* Show only wine name, vintage, and lock button in detached mode */
+#calendar-container.detached .wine-header {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  padding-right: 60px; /* Leave space for lock icon */
+  position: relative;
+}
+
+/* Large wine name for 7-meter visibility */
+#calendar-container.detached .wine-name {
+  font-size: 2.5rem !important;
+  font-weight: 900 !important;
+  line-height: 1.1;
+  text-align: center;
+  word-wrap: break-word;
+  hyphens: auto;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Large vintage text positioned on the right */
+#calendar-container.detached .muted {
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  color: #666 !important;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* Lock button positioning in detached mode */
+#calendar-container.detached .lock-icon {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  font-size: 2rem !important;
+  z-index: 10;
+  background: rgba(255,255,255,0.9);
+  border-radius: 8px;
+  padding: 8px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Position reason container to the right side in detached view */
+#calendar-container.detached .reason-container {
+  position: absolute !important;
+  top: 12px;
+  right: 60px; /* Leave space for lock icon */
+  z-index: 9;
+}
+
+#calendar-container.detached .reason-badge {
+  font-size: 1rem !important;
+  padding: 4px 8px !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
+  white-space: nowrap;
+}
+
+/* Position tags container to the right side below reason */
+#calendar-container.detached .tags-container {
+  position: absolute !important;
+  bottom: 12px;
+  right: 60px; /* Leave space for lock icon */
+  z-index: 9;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+#calendar-container.detached .tag-badge {
+  font-size: 0.9rem !important;
+  padding: 3px 6px !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  white-space: nowrap;
+}
+
 /* =========================
    Responsive
    ========================= */
@@ -634,12 +812,16 @@ input[type="range"]::-moz-range-thumb {
   z-index: 5;
 }
 
-/* Detached view schedule time - larger and more visible */
+/* Detached view schedule time - larger, more visible, and positioned in top-left */
 #calendar-container.detached .schedule-time {
-  font-size: 1rem !important;
-  padding: 3px 6px !important;
+  top: 6px !important;
+  bottom: auto !important;
+  left: 6px !important;
+  font-size: 1.1rem !important;
+  padding: 4px 8px !important;
   border-radius: 6px !important;
   background: rgba(255, 255, 255, 0.95) !important;
   color: #374151 !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
 }

@@ -1,0 +1,168 @@
+{
+  "Monday": [
+    {
+      "id": null,
+      "wine": "Unknown",
+      "vintage": "2022",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": null,
+      "wine": "Unknown",
+      "vintage": "2001",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    null,
+    null,
+    null
+  ],
+  "Tuesday": [
+    {
+      "id": null,
+      "wine": "Unknown",
+      "vintage": "2009",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": null,
+      "wine": "Unknown",
+      "vintage": "2019",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    {
+      "id": null,
+      "wine": "Unknown",
+      "vintage": "1995",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2
+    },
+    {
+      "id": null,
+      "wine": "Unknown",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3
+    },
+    {
+      "id": null,
+      "wine": "Unknown",
+      "vintage": "2020",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4
+    }
+  ],
+  "Wednesday": [
+    {
+      "id": null,
+      "wine": "Unknown",
+      "vintage": "2010",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": null,
+      "wine": "Unknown",
+      "vintage": "2000",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    null,
+    null,
+    null
+  ],
+  "Thursday": [
+    {
+      "id": null,
+      "wine": "Unknown",
+      "vintage": "2017",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    {
+      "id": null,
+      "wine": "Unknown",
+      "vintage": "2014",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1
+    },
+    null,
+    null,
+    null
+  ],
+  "Friday": [
+    {
+      "id": null,
+      "wine": "Unknown",
+      "vintage": "NV",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    null,
+    null,
+    null,
+    null
+  ],
+  "Saturday": [
+    {
+      "id": null,
+      "wine": "Unknown",
+      "vintage": "2018",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0
+    },
+    null,
+    null,
+    null,
+    null
+  ],
+  "Sunday": [
+    null,
+    null,
+    null,
+    null,
+    null
+  ]
+}

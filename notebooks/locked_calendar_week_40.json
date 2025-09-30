@@ -1,8 +1,7 @@
 {
   "Monday": [
-    null,
     {
-      "id": "56727",
+      "id": null,
       "wine": "Champagne Brut Dom P",
       "vintage": "2013",
       "full_type": "Unknown",
@@ -10,17 +9,74 @@
       "stock": 678,
       "price_tier": "Unknown",
       "locked": true,
-      "slot": 1
+      "slot": 0,
+      "card_color": "gold"
+    },
+    {
+      "id": "51417",
+      "wine": "Pavie",
+      "vintage": "2019",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 72,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 1,
+      "card_color": "gold"
     },
     null,
     null,
     null
   ],
   "Tuesday": [
-    null,
-    null,
-    null,
-    null,
+    {
+      "id": "59246",
+      "wine": "Barolo Cannubi Riser",
+      "vintage": "2016",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 18,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 0,
+      "card_color": "gold"
+    },
+    {
+      "id": "62509",
+      "wine": "Clos de la Roche",
+      "vintage": "2021",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 48,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 1,
+      "card_color": "turquoise"
+    },
+    {
+      "id": null,
+      "wine": "Pavie_",
+      "vintage": "2019",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2,
+      "custom_card": true,
+      "card_color": "gold"
+    },
+    {
+      "id": null,
+      "wine": "September *Recap*",
+      "vintage": "NV",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 3,
+      "custom_card": true,
+      "card_color": "gold"
+    },
     null
   ],
   "Wednesday": [

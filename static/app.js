@@ -763,6 +763,37 @@
             <div class="color-option turquoise" data-color="turquoise" title="Turquoise"></div>
           </div>
         </li>
+        <li class="menu-separator"></li>
+        <li class="time-menu-item">
+          <span>🕒 Schedule Time:</span>
+          <select class="time-select" data-act="time">
+            <option value="">No time set</option>
+            <option value="09:00">9:00</option>
+            <option value="09:30">9:30</option>
+            <option value="10:00">10:00</option>
+            <option value="10:30">10:30</option>
+            <option value="11:00">11:00</option>
+            <option value="11:30">11:30</option>
+            <option value="12:00">12:00</option>
+            <option value="12:30">12:30</option>
+            <option value="13:00">13:00</option>
+            <option value="13:30">13:30</option>
+            <option value="14:00">14:00</option>
+            <option value="14:30">14:30</option>
+            <option value="15:00">15:00</option>
+            <option value="15:30">15:30</option>
+            <option value="16:00">16:00</option>
+            <option value="16:30">16:30</option>
+            <option value="17:00">17:00</option>
+            <option value="17:30">17:30</option>
+            <option value="18:00">18:00</option>
+            <option value="18:30">18:30</option>
+            <option value="19:00">19:00</option>
+            <option value="19:30">19:30</option>
+            <option value="20:00">20:00</option>
+            <option value="20:30">20:30</option>
+          </select>
+        </li>
       </ul>
     `;
     doc.body.appendChild(ctxMenuEl);
@@ -784,6 +815,13 @@
         return;
       }
       
+      const timeSelect = e.target.closest(".time-select");
+      if (timeSelect) {
+        // Prevent event bubbling for time select interactions
+        e.stopPropagation();
+        return;
+      }
+      
       if (!li) return;
       const act = li.dataset.act;
       destroyContextMenu();
@@ -791,14 +829,57 @@
       if (act === "move") openMoveWeekModal(cardEl);
       if (act === "duplicate") duplicateCardInWeek(cardEl);
     });
+    
+    // Add dedicated change event listener for time selection
+    const timeSelect = ctxMenuEl.querySelector(".time-select");
+    if (timeSelect) {
+      timeSelect.addEventListener("change", (e) => {
+        e.stopPropagation();
+        const selectedTime = e.target.value;
+        if (selectedTime) {
+          setCardScheduleTime(cardEl, selectedTime);
+          destroyContextMenu();
+        }
+      });
+    }
 
     setTimeout(() => {
-      const off = (e) => { if (ctxMenuEl && !ctxMenuEl.contains(e.target)) destroyContextMenu(); };
+      const off = (e) => { 
+        // Don't close if clicking on time select dropdown or its options
+        if (e.target.closest('.time-select') || e.target.closest('option')) return;
+        if (ctxMenuEl && !ctxMenuEl.contains(e.target)) destroyContextMenu(); 
+      };
       doc.addEventListener("click", off, { once: true });
       win.addEventListener("scroll", destroyContextMenu, { once: true });
       win.addEventListener("resize", destroyContextMenu, { once: true });
       doc.addEventListener("keydown", (e) => { if (e.key === "Escape") destroyContextMenu(); }, { once: true });
     }, 0);
+  }
+
+  function setCardScheduleTime(cardEl, timeValue) {
+    // Update the card's schedule time
+    const wineData = extractWineData(cardEl);
+    wineData.schedule_time = timeValue;
+    
+    // Update the visual display
+    let scheduleDisplay = cardEl.querySelector('.schedule-time');
+    if (timeValue) {
+      if (!scheduleDisplay) {
+        scheduleDisplay = document.createElement('div');
+        scheduleDisplay.className = 'schedule-time';
+        cardEl.appendChild(scheduleDisplay);
+      }
+      scheduleDisplay.textContent = timeValue;
+    } else {
+      // Remove schedule time display if no time set
+      if (scheduleDisplay) {
+        scheduleDisplay.remove();
+      }
+    }
+    
+    // Persist the change
+    persistLockedCalendarState().catch(() => {});
+    persistFullCalendarSnapshot().catch(() => {});
   }
 
   function startSearchForThisSlot(cardEl) {
@@ -950,6 +1031,7 @@
     // Find an empty slot in the current week (try all days)
     let targetBox = null;
     let targetDay = null;
+    let targetSlot = null;
     
     // First, try to find an empty slot in the same day
     for (let i = 0; i < NUM_SLOTS; i++) {
@@ -957,6 +1039,7 @@
       if (box && !box.querySelector(".wine-box")) {
         targetBox = box;
         targetDay = currentDay;
+        targetSlot = i;
         break;
       }
     }
@@ -970,6 +1053,7 @@
           if (box && !box.querySelector(".wine-box")) {
             targetBox = box;
             targetDay = day;
+            targetSlot = i;
             break;
           }
         }
@@ -999,22 +1083,12 @@
       last_campaign: d.last_campaign,
       locked: false, // Start as unlocked by default
       custom_card: d.customCard === "true",
-      card_color: d.cardColor // Preserve the color
+      card_color: d.cardColor, // Preserve the current color as default
+      reason_payload: d.reason_payload // Preserve existing reason/tags if any
     };
     
-    // Render the duplicate into the target box
-    renderWineIntoBox(targetBox, duplicateItem, { locked: false });
-    
-    // Update the box state
-    targetBox.classList.remove("empty");
-    targetBox.classList.add("filled");
-    
-    // Persist changes
-    persistLockedCalendarState().catch(console.warn);
-    persistFullCalendarSnapshot().catch(console.warn);
-    recalcAndUpdateGauge({ animate: true });
-    
-    alert(`Wine duplicated to ${targetDay}!`);
+    // Show duplicate dialog instead of directly placing the card
+    showDuplicateDialog(duplicateItem, targetDay, targetSlot, targetBox);
   }
 
   function normalizeLocked(locks) {
@@ -1716,6 +1790,264 @@
     closeReasonDialog();
   }
 
+  // ===== Duplicate Dialog =====
+  let pendingDuplicateData = null;
+  let pendingDuplicateDay = null;
+  let pendingDuplicateSlot = null;
+  let pendingDuplicateBox = null;
+
+  function showDuplicateDialog(item, day, slot, targetBox) {
+    pendingDuplicateData = item;
+    pendingDuplicateDay = day;
+    pendingDuplicateSlot = slot;
+    pendingDuplicateBox = targetBox;
+    
+    // Create and show duplicate dialog
+    const existingDialog = document.getElementById('duplicateDialog');
+    if (existingDialog) existingDialog.remove();
+    
+    const dialogHtml = `
+      <div id="duplicateDialog" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">🔄 Customize Duplicate Card</h3>
+            <button id="duplicateDialog-close" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+          </div>
+          
+          <!-- Wine Info -->
+          <div class="mb-4 p-3 bg-gray-50 rounded-md">
+            <div class="text-sm text-gray-600">Duplicating:</div>
+            <div class="font-medium text-gray-800">${item.name} (${item.vintage}) → ${day}, slot ${Number(slot) + 1}</div>
+          </div>
+
+          <!-- Color Selection -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Card Color</label>
+            <div class="flex gap-2 flex-wrap">
+              <div class="color-option green ${item.card_color === 'green' || !item.card_color ? 'selected' : ''}" data-color="green" title="Green (Default)"></div>
+              <div class="color-option silver ${item.card_color === 'silver' ? 'selected' : ''}" data-color="silver" title="Silver"></div>
+              <div class="color-option white ${item.card_color === 'white' ? 'selected' : ''}" data-color="white" title="White"></div>
+              <div class="color-option turquoise ${item.card_color === 'turquoise' ? 'selected' : ''}" data-color="turquoise" title="Turquoise"></div>
+            </div>
+          </div>
+
+          <!-- Reason Selection -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Reason</label>
+            <select id="duplicate-reason-select" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="Normal">Normal</option>
+              <option value="Recall">Recall</option>
+              <option value="Horeca">Horeca</option>
+              <option value="EnPrim">EnPrim</option>
+              <option value="Winner">Winner (last N days)</option>
+            </select>
+          </div>
+
+          <!-- Winner Window (conditional) -->
+          <div id="duplicate-winner-window-section" class="mb-4 hidden">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Winner Window *</label>
+            <div class="flex gap-2">
+              <label class="flex items-center">
+                <input type="radio" name="duplicate-winner-window" value="7" class="mr-1"> 7 days
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="duplicate-winner-window" value="14" class="mr-1"> 14 days
+              </label>
+              <label class="flex items-center">
+                <input type="radio" name="duplicate-winner-window" value="30" class="mr-1"> 30 days
+              </label>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Description (optional)</label>
+            <div class="relative">
+              <textarea id="duplicate-description" maxlength="80" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="2" placeholder="Brief description..."></textarea>
+              <div class="text-xs text-gray-500 mt-1">
+                <span id="duplicate-char-counter">0</span>/80 characters
+              </div>
+            </div>
+          </div>
+
+          <!-- Schedule Time -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Schedule Time (optional)</label>
+            <input type="time" id="duplicate-schedule-time" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" title="Select schedule time" placeholder="e.g., 17:00" min="09:00" max="20:30" step="900" value="${item.schedule_time || ''}">
+          </div>
+
+          <!-- Tags -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Tags (optional)</label>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" class="duplicate-tag-btn px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors" data-tag="CH">CH</button>
+              <button type="button" class="duplicate-tag-btn px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors" data-tag="EU">EU</button>
+              <button type="button" class="duplicate-tag-btn px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors" data-tag="W">🌍</button>
+              <button type="button" class="duplicate-tag-btn px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors" data-tag="BDG">⬇️ BDG</button>
+              <button type="button" class="duplicate-tag-btn px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-50 transition-colors" data-tag="BIG">🅱️ BIG</button>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex gap-2 justify-end">
+            <button id="duplicate-cancel" class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">Cancel</button>
+            <button id="duplicate-save" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Duplicate Card</button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', dialogHtml);
+    
+    const dialog = document.getElementById('duplicateDialog');
+    
+    // Populate existing values if any
+    const existingReason = item.reason_payload?.reason || 'Normal';
+    document.getElementById('duplicate-reason-select').value = existingReason;
+    
+    if (existingReason === 'Winner') {
+      document.getElementById('duplicate-winner-window-section').classList.remove('hidden');
+      if (item.reason_payload?.winner_window) {
+        const radio = document.querySelector(`input[name="duplicate-winner-window"][value="${item.reason_payload.winner_window}"]`);
+        if (radio) radio.checked = true;
+      }
+    }
+    
+    if (item.reason_payload?.description) {
+      const descEl = document.getElementById('duplicate-description');
+      descEl.value = item.reason_payload.description;
+      document.getElementById('duplicate-char-counter').textContent = item.reason_payload.description.length;
+    }
+    
+    if (item.reason_payload?.tags) {
+      item.reason_payload.tags.forEach(tag => {
+        const btn = document.querySelector(`[data-tag="${tag}"]`);
+        if (btn) {
+          btn.classList.remove('border-gray-300', 'hover:bg-gray-50');
+          btn.classList.add('bg-blue-500', 'text-white');
+        }
+      });
+    }
+    
+    // Event listeners
+    dialog.querySelector('#duplicateDialog-close').addEventListener('click', closeDuplicateDialog);
+    dialog.querySelector('#duplicate-cancel').addEventListener('click', closeDuplicateDialog);
+    dialog.querySelector('#duplicate-save').addEventListener('click', saveDuplicateCard);
+    
+    // Color selection
+    dialog.querySelectorAll('.color-option').forEach(option => {
+      option.addEventListener('click', (e) => {
+        dialog.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+        e.target.classList.add('selected');
+      });
+    });
+    
+    // Reason change handler
+    dialog.querySelector('#duplicate-reason-select').addEventListener('change', (e) => {
+      const winnerSection = dialog.querySelector('#duplicate-winner-window-section');
+      if (e.target.value === 'Winner') {
+        winnerSection.classList.remove('hidden');
+      } else {
+        winnerSection.classList.add('hidden');
+      }
+    });
+    
+    // Tag selection
+    dialog.querySelectorAll('.duplicate-tag-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const isSelected = btn.classList.contains('bg-blue-500');
+        if (isSelected) {
+          btn.classList.remove('bg-blue-500', 'text-white');
+          btn.classList.add('border-gray-300', 'hover:bg-gray-50');
+        } else {
+          btn.classList.remove('border-gray-300', 'hover:bg-gray-50');
+          btn.classList.add('bg-blue-500', 'text-white');
+        }
+      });
+    });
+    
+    // Character counter
+    dialog.querySelector('#duplicate-description').addEventListener('input', (e) => {
+      dialog.querySelector('#duplicate-char-counter').textContent = e.target.value.length;
+    });
+  }
+
+  function closeDuplicateDialog() {
+    const dialog = document.getElementById('duplicateDialog');
+    if (dialog) dialog.remove();
+    pendingDuplicateData = null;
+    pendingDuplicateDay = null;
+    pendingDuplicateSlot = null;
+    pendingDuplicateBox = null;
+  }
+
+  async function saveDuplicateCard() {
+    if (!pendingDuplicateData || !pendingDuplicateBox) return;
+    
+    const dialog = document.getElementById('duplicateDialog');
+    const reasonSelect = dialog.querySelector('#duplicate-reason-select');
+    const description = dialog.querySelector('#duplicate-description');
+    const reason = reasonSelect.value;
+    
+    let winnerWindow = null;
+    if (reason === 'Winner') {
+      const checkedRadio = dialog.querySelector('input[name="duplicate-winner-window"]:checked');
+      if (!checkedRadio) {
+        alert('Please select a winner window for Winner reason.');
+        return;
+      }
+      winnerWindow = parseInt(checkedRadio.value);
+    }
+    
+    // Get selected color
+    const selectedColorEl = dialog.querySelector('.color-option.selected');
+    const selectedColor = selectedColorEl ? selectedColorEl.dataset.color : 'green';
+    
+    // Get selected tags
+    const tags = [];
+    dialog.querySelectorAll('.duplicate-tag-btn.bg-blue-500').forEach(btn => {
+      tags.push(btn.dataset.tag);
+    });
+    
+    // Get schedule time
+    const scheduleInput = dialog.querySelector('#duplicate-schedule-time');
+    const scheduleTime = scheduleInput ? scheduleInput.value : '';
+    
+    // Create reason payload
+    const reasonPayload = {
+      reason,
+      winner_window: winnerWindow,
+      description: description.value.trim(),
+      tags
+    };
+    
+    // Create the duplicate item with all customizations
+    const duplicateItem = {
+      ...pendingDuplicateData,
+      card_color: selectedColor,
+      reason_payload: reasonPayload
+    };
+    
+    // Add schedule time if provided
+    if (scheduleTime) {
+      duplicateItem.schedule_time = scheduleTime;
+    }
+    
+    // Render the duplicate into the target box
+    renderWineIntoBox(pendingDuplicateBox, duplicateItem, { locked: false });
+    
+    // Update the box state
+    pendingDuplicateBox.classList.remove("empty");
+    pendingDuplicateBox.classList.add("filled");
+    
+    // Persist changes
+    await persistLockedCalendarState();
+    await persistFullCalendarSnapshot();
+    recalcAndUpdateGauge({ animate: true });
+    
+    closeDuplicateDialog();
+  }
+
   function formatScheduleTime(timeString) {
     if (!timeString) return '';
     // If it's already in HH:MM format, return as is
@@ -2052,10 +2384,11 @@
     const btn = document.createElement("button");
     btn.id = "filters-compact-btn";
     btn.type = "button";
-    btn.textContent = "Compact filters";
+    // Set initial text based on current state
+    btn.textContent = dock.classList.contains("filters-compact") ? "Show filters" : "Hide filters";
     btn.addEventListener("click", () => {
       dock.classList.toggle("filters-compact");
-      btn.textContent = dock.classList.contains("filters-compact") ? "Expand filters" : "Compact filters";
+      btn.textContent = dock.classList.contains("filters-compact") ? "Show filters" : "Hide filters";
     });
     dock.appendChild(btn);
   }
@@ -2271,6 +2604,16 @@
 
     $("#startEngineBtn")?.addEventListener("click", startFullEngine);
     $("#loadScheduleBtn")?.addEventListener("click", loadNewSchedule);
+
+    // Initialize filters toggle button
+    const filtersToggleBtn = $("#filters-compact-btn");
+    const filtersPanel = $("#filters-panel");
+    if (filtersToggleBtn && filtersPanel) {
+      filtersToggleBtn.addEventListener("click", () => {
+        filtersPanel.classList.toggle("filters-compact");
+        filtersToggleBtn.textContent = filtersPanel.classList.contains("filters-compact") ? "Show filters" : "Hide filters";
+      });
+    }
 
     // Reason Dialog event listeners
     $("#reasonDialog-close")?.addEventListener("click", closeReasonDialog);
