@@ -1,5 +1,12 @@
 import pandas as pd
+import json
 from pathlib import Path
+
+# --- Path definitions ---
+IRON_DATA_PATH = Path(r"C:\Users\Marco.Africani\OneDrive - AVU SA\AVU CPI Campaign\Puzzle_control_Reports\IRON_DATA")
+SOURCE_PATH = Path(r"C:\Users\Marco.Africani\OneDrive - AVU SA\AVU CPI Campaign\Puzzle_control_Reports\SOURCE_FILES")
+CARDS_JSON_PATH = Path(r"C:\Users\Marco.Africani\OneDrive - AVU SA\AVU CPI Campaign\Puzzle_control_Reports\SOURCE_FILES\all_stock_cards.json")
+
 # --- Missing function and variable stubs ---
 def _load_winners_latest():
     # TODO: Implement actual winners loading logic
@@ -231,13 +238,8 @@ os.environ.setdefault("ENABLE_OUTLOOK", "1")
 # ---- Composer helpers ----
 
 # --- Missing global variables and helpers ---
-IRON_DATA_PATH = Path(r"C:\Users\Marco.Africani\OneDrive - AVU SA\AVU CPI Campaign\Puzzle_control_Reports\IRON_DATA")
-SOURCE_PATH = Path(r"C:\Users\Marco.Africani\OneDrive - AVU SA\AVU CPI Campaign\Puzzle_control_Reports\SOURCE_FILES")
 
 # ===== Catalog search backed by all_stock_cards.json =====
-CARDS_JSON_PATH = Path(
-    r"C:\Users\Marco.Africani\OneDrive - AVU SA\AVU CPI Campaign\Puzzle_control_Reports\SOURCE_FILES\all_stock_cards.json"
-)
 
 _CARDS_CACHE = {"rows": None, "mtime": None, "src": None}
 _CATALOG_FALLBACK = {"df": None, "src": None, "mtime": None}  # PKL fallback

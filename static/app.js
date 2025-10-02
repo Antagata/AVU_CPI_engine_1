@@ -583,6 +583,11 @@
     if (item.reason_payload) {
       el.dataset.reasonPayload = JSON.stringify(item.reason_payload);
     }
+    
+    // Schedule time support
+    if (item.schedule_time) {
+      el.dataset.scheduleTime = item.schedule_time;
+    }
 
     const isLocked = el.dataset.locked === "true";
     const lockIcon = isLocked ? "fa-lock" : "fa-lock-open";
@@ -595,6 +600,9 @@
     
     // Generate reason badges
     const reasonBadges = generateReasonBadges(item.reason_payload);
+    
+    // Generate tag flags display
+    const tagFlags = generateTagFlags(item.reason_payload);
 
     // Generate schedule time display
     const scheduleTime = item.schedule_time ? formatScheduleTime(item.schedule_time) : '';
@@ -617,6 +625,7 @@
         ${isCustom ? '<div><small style="color: #d4af37;">✨ Custom Wine</small></div>' : ''}
       </div>
       ${reasonBadges}
+      ${tagFlags}
       ${scheduleDisplay}
     `;
 
@@ -745,6 +754,11 @@
     destroyContextMenu();
     const doc = cardEl.ownerDocument || document;
     const win = doc.defaultView || window;
+    
+    // Get current card data to show tag states
+    const wineData = extractWineData(cardEl);
+    const currentTags = wineData.reason_payload?.tags || [];
+    
     ctxMenuEl = doc.createElement("div");
     ctxMenuEl.className = "context-menu";
     ctxMenuEl.innerHTML = `
@@ -759,7 +773,7 @@
             <div class="color-option gold" data-color="gold" title="Gold"></div>
             <div class="color-option green" data-color="green" title="Green (Default)"></div>
             <div class="color-option silver" data-color="silver" title="Silver"></div>
-            <div class="color-option white" data-color="white" title="White"></div>
+            <div class="color-option red" data-color="red" title="Red"></div>
             <div class="color-option turquoise" data-color="turquoise" title="Turquoise"></div>
           </div>
         </li>
@@ -793,6 +807,17 @@
             <option value="20:00">20:00</option>
             <option value="20:30">20:30</option>
           </select>
+        </li>
+        <li class="menu-separator"></li>
+        <li class="tag-menu-item">
+          <span>Tags:</span>
+          <div class="tag-options">
+            <div class="tag-option ${currentTags.includes('CH') ? 'selected' : ''}" data-tag="CH" title="Switzerland"><span class="fi fi-ch"></span></div>
+            <div class="tag-option ${currentTags.includes('EU') ? 'selected' : ''}" data-tag="EU" title="European Union"><span class="fi fi-eu"></span></div>
+            <div class="tag-option" data-tag="W" title="World">�</div>
+            <div class="tag-option ${currentTags.includes('BDG') ? 'selected' : ''}" data-tag="BDG" title="Budget">⬇️</div>
+            <div class="tag-option ${currentTags.includes('BIG') ? 'selected' : ''}" data-tag="BIG" title="Big Size">🅱️</div>
+          </div>
         </li>
       </ul>
     `;
@@ -828,6 +853,15 @@
       if (act === "delete") deleteCardFromCalendar(cardEl);
       if (act === "move") openMoveWeekModal(cardEl);
       if (act === "duplicate") duplicateCardInWeek(cardEl);
+      
+      // Handle tag option clicks
+      const tagOption = e.target.closest(".tag-option");
+      if (tagOption) {
+        const tag = tagOption.dataset.tag;
+        toggleCardTag(cardEl, tag);
+        destroyContextMenu();
+        return;
+      }
     });
     
     // Add dedicated change event listener for time selection
@@ -861,6 +895,13 @@
     const wineData = extractWineData(cardEl);
     wineData.schedule_time = timeValue;
     
+    // Update dataset attribute for persistence
+    if (timeValue) {
+      cardEl.dataset.scheduleTime = timeValue;
+    } else {
+      delete cardEl.dataset.scheduleTime;
+    }
+    
     // Update the visual display
     let scheduleDisplay = cardEl.querySelector('.schedule-time');
     if (timeValue) {
@@ -880,6 +921,103 @@
     // Persist the change
     persistLockedCalendarState().catch(() => {});
     persistFullCalendarSnapshot().catch(() => {});
+  }
+
+  function generateTagFlags(reasonPayload) {
+    if (!reasonPayload || !reasonPayload.tags || reasonPayload.tags.length === 0) {
+      return '';
+    }
+    
+    const flagMap = {
+      'CH': '<span class="fi fi-ch"></span>',
+      'EU': '<span class="fi fi-eu"></span>',
+      'US': '<span class="fi fi-us"></span>',
+      'W': '🌍',
+      'BDG': '⬇️',
+      'BIG': '🅱️'
+    };
+    
+    const flags = reasonPayload.tags.map(tag => flagMap[tag] || tag).join(' ');
+    return `<div class="tag-flags">${flags}</div>`;
+  }
+  
+  function toggleCardTag(cardEl, tag) {
+    // Get current card data
+    const wineData = extractWineData(cardEl);
+    const reasonPayload = wineData.reason_payload || {};
+    const currentTags = reasonPayload.tags || [];
+    
+    // Toggle the tag
+    let newTags;
+    if (currentTags.includes(tag)) {
+      newTags = currentTags.filter(t => t !== tag);
+    } else {
+      newTags = [...currentTags, tag];
+    }
+    
+    // Update reason payload
+    const newReasonPayload = {
+      ...reasonPayload,
+      tags: newTags,
+      reason: reasonPayload.reason || 'Normal'
+    };
+    
+    // Update card dataset
+    cardEl.dataset.reasonPayload = JSON.stringify(newReasonPayload);
+    
+    // Update visual display by re-rendering the card
+    const container = cardEl.parentElement;
+    const cardData = {
+      ...wineData,
+      reason_payload: newReasonPayload
+    };
+    
+    cardEl.remove();
+    renderWineIntoBox(container, cardData, { locked: true });
+    
+    // Persist changes
+    persistLockedCalendarState().catch(() => {});
+  }
+
+  function openTagManagerForCard(cardEl) {
+    // Get current card data
+    const wineData = extractWineData(cardEl);
+    const currentReasonPayload = wineData.reason_payload || {};
+    const currentTags = currentReasonPayload.tags || [];
+    
+    // Set up the reason dialog but pre-populate with current data
+    pendingCardData = wineData;
+    pendingCardDay = cardEl.dataset.day || cardEl.closest('.fill-box').dataset.day;
+    pendingCardSlot = cardEl.dataset.slot || cardEl.closest('.fill-box').dataset.slot;
+    pendingCardLocked = cardEl.dataset.locked === 'true';
+    
+    // Open the reason dialog
+    openReasonDialog();
+    
+    // Pre-populate the dialog with current values
+    const reasonSelect = document.getElementById('reason-select');
+    const description = document.getElementById('reason-description');
+    const scheduleInput = document.getElementById('schedule-time');
+    
+    if (reasonSelect && currentReasonPayload.reason) {
+      reasonSelect.value = currentReasonPayload.reason;
+    }
+    if (description && currentReasonPayload.description) {
+      description.value = currentReasonPayload.description;
+    }
+    if (scheduleInput && wineData.schedule_time) {
+      scheduleInput.value = wineData.schedule_time;
+    }
+    
+    // Pre-select current tags
+    document.querySelectorAll('.tag-btn').forEach(btn => {
+      btn.classList.remove('bg-blue-500', 'text-white');
+      btn.classList.add('hover:bg-gray-50');
+      if (currentTags.includes(btn.dataset.tag)) {
+        btn.classList.remove('hover:bg-gray-50');
+        btn.classList.add('bg-blue-500', 'text-white');
+      }
+    });
   }
 
   function startSearchForThisSlot(cardEl) {
@@ -1145,6 +1283,8 @@
   // ===== Locked calendar persistence (server + local backup) =====
   function readDOMLockedState() {
     const out = {};
+    
+    // Handle regular day columns
     $all(".day-column").forEach((col) => {
       const day = col.querySelector(".day-name")?.textContent?.trim();
       if (!day) return;
@@ -1163,11 +1303,41 @@
           locked: true,
           slot: idx,
           custom_card: card.dataset.customCard === "true" || undefined,
-          card_color: card.dataset.cardColor || undefined
+          card_color: card.dataset.cardColor || undefined,
+          reason_payload: card.dataset.reasonPayload ? JSON.parse(card.dataset.reasonPayload) : undefined,
+          schedule_time: card.dataset.scheduleTime || undefined
         });
       });
       out[day] = slots;
     });
+    
+    // Handle leads boxes
+    $all(".leads-box").forEach((box) => {
+      const day = box.dataset.day;
+      if (!day) return;
+      const slots = [];
+      $all(".wine-box[data-locked='true']", box).forEach((card, idx) => {
+        slots.push({
+          id: card.dataset.id || null,
+          wine: card.dataset.name || "",
+          vintage: card.dataset.vintage || "",
+          full_type: card.dataset.type || undefined,
+          region_group: card.dataset.region || undefined,
+          stock: Number(card.dataset.stock || 0),
+          price_tier: card.dataset.priceTier || undefined,
+          locked: true,
+          slot: idx,
+          custom_card: card.dataset.customCard === "true" || undefined,
+          card_color: card.dataset.cardColor || undefined,
+          reason_payload: card.dataset.reasonPayload ? JSON.parse(card.dataset.reasonPayload) : undefined,
+          schedule_time: card.dataset.scheduleTime || undefined
+        });
+      });
+      if (slots.length > 0) {
+        out[day] = slots;
+      }
+    });
+    
     return out;
   }
 
@@ -1283,6 +1453,8 @@
   function renderLockedOnlyFromData(locks) {
     let placed = false;
     const keys = collectCurrentKeys();
+    
+    // Handle regular day slots
     DAYS.forEach((day) => {
       const arr = Array.isArray(locks?.[day]) ? locks[day] : [];
       arr.slice(0, NUM_SLOTS).forEach((it, idx) => {
@@ -1301,12 +1473,51 @@
           stock: it.stock ?? it.stock_count,
           price_tier: it.price_tier ?? it.tier,
           match_quality: it.match_quality,
-          avg_cpi_score: it.avg_cpi_score
+          avg_cpi_score: it.avg_cpi_score,
+          reason_payload: it.reason_payload,
+          schedule_time: it.schedule_time,
+          custom_card: it.custom_card,
+          card_color: it.card_color
         }, { locked: true });
         keys.add(k);
         placed = true;
       });
     });
+    
+    // Handle leads boxes
+    Object.keys(locks).forEach((day) => {
+      if (DAYS.includes(day)) return; // Skip regular days, already handled above
+      
+      const arr = Array.isArray(locks[day]) ? locks[day] : [];
+      const leadsBox = document.querySelector(`.leads-box[data-day="${day}"]`);
+      if (!leadsBox) return;
+      
+      arr.forEach((it, idx) => {
+        if (!it) return;
+        const k = makeKey(it.id || it.wine, it.vintage, it.wine);
+        if (keys.has(k)) return;
+        
+        renderWineIntoBox(leadsBox, {
+          id: it.id ?? it.wine_id ?? "",
+          wine: it.wine ?? it.name ?? "Unknown",
+          vintage: it.vintage ?? "NV",
+          locked: true,
+          full_type: it.full_type,
+          region_group: it.region_group,
+          stock: it.stock ?? it.stock_count,
+          price_tier: it.price_tier ?? it.tier,
+          match_quality: it.match_quality,
+          avg_cpi_score: it.avg_cpi_score,
+          reason_payload: it.reason_payload,
+          schedule_time: it.schedule_time,
+          custom_card: it.custom_card,
+          card_color: it.card_color
+        }, { locked: true });
+        keys.add(k);
+        placed = true;
+      });
+    });
+    
     recalcAndUpdateGauge({ animate: false });
     return placed;
   }
@@ -1763,16 +1974,21 @@
       tags
     };
     
-    // Add schedule time to item if provided
-    if (scheduleTime) {
-      itemWithReason.schedule_time = scheduleTime;
-    }
-    
     // Add reason payload to item
     const itemWithReason = {
       ...pendingCardData,
       reason_payload: reasonPayload
     };
+    
+    // Add schedule time to item if provided
+    if (scheduleTime) {
+      itemWithReason.schedule_time = scheduleTime;
+    }
+    
+    // Auto-set turquoise color for Delayed reason
+    if (reason === 'Delayed') {
+      itemWithReason.card_color = 'turquoise';
+    }
     
     // Now place the card with reason data
     const cell = document.querySelector(`.fill-box[data-day="${pendingCardDay}"][data-slot="${pendingCardSlot}"]`);
@@ -1826,7 +2042,7 @@
             <div class="flex gap-2 flex-wrap">
               <div class="color-option green ${item.card_color === 'green' || !item.card_color ? 'selected' : ''}" data-color="green" title="Green (Default)"></div>
               <div class="color-option silver ${item.card_color === 'silver' ? 'selected' : ''}" data-color="silver" title="Silver"></div>
-              <div class="color-option white ${item.card_color === 'white' ? 'selected' : ''}" data-color="white" title="White"></div>
+              <div class="color-option red ${item.card_color === 'red' ? 'selected' : ''}" data-color="red" title="Red"></div>
               <div class="color-option turquoise ${item.card_color === 'turquoise' ? 'selected' : ''}" data-color="turquoise" title="Turquoise"></div>
             </div>
           </div>
@@ -2427,6 +2643,21 @@
       } catch (e) {
         console.warn("Failed to parse reason payload:", e);
       }
+    }
+    
+    // Add schedule time if present
+    if (el.dataset.scheduleTime) {
+      data.schedule_time = el.dataset.scheduleTime;
+    }
+    
+    // Add custom card flag if present
+    if (el.dataset.customCard === "true") {
+      data.custom_card = true;
+    }
+    
+    // Add card color if present
+    if (el.dataset.cardColor) {
+      data.card_color = el.dataset.cardColor;
     }
     
     return data;

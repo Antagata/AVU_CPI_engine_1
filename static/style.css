@@ -378,14 +378,13 @@ input[type="range"]::-moz-range-thumb {
 .wine-box.color-silver * {
   color: #2d3748 !important;
 }
-.wine-box.color-white {
-  background: #FFFFFF !important;
-  color: #2d3748 !important;
-  border-color: #E5E7EB !important;
-  box-shadow: 0 0 8px rgba(0,0,0,0.15) !important;
+.wine-box.color-red {
+  background: linear-gradient(135deg, #DC143C, #B22222) !important;
+  color: #ffffff !important;
+  border-color: #8B0000 !important;
 }
-.wine-box.color-white * {
-  color: #2d3748 !important;
+.wine-box.color-red * {
+  color: #ffffff !important;
 }
 .wine-box.color-turquoise {
   background: linear-gradient(135deg, #40E0D0, #20B2AA) !important;
@@ -423,6 +422,79 @@ input[type="range"]::-moz-range-thumb {
   display: flex;
   gap: 6px;
 }
+.color-options {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tag-options {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tag-option {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #4a5568;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  background: #f9f9f9;
+}
+
+.tag-option:hover {
+  transform: scale(1.1);
+  border-color: #d4af37;
+  background: #ffffff;
+}
+
+.tag-option.selected {
+  border-color: #3b82f6;
+  background: #3b82f6;
+  color: white;
+}
+
+.tag-flags {
+  font-size: 12px;
+  margin-top: 2px;
+  opacity: 0.9;
+}
+
+/* Flag icon styling */
+.fi {
+  width: 16px;
+  height: 12px;
+  display: inline-block;
+  border-radius: 2px;
+}
+
+.tag-option .fi {
+  width: 14px;
+  height: 10px;
+}
+
+.tag-btn .fi {
+  width: 16px;
+  height: 12px;
+  margin-right: 4px;
+}
+
+.tag-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  list-style: none;
+}
+
 .color-option {
   width: 24px;
   height: 24px;
@@ -438,7 +510,7 @@ input[type="range"]::-moz-range-thumb {
 .color-option.gold { background: linear-gradient(135deg, #FFD700, #FFA500); }
 .color-option.green { background: #f9f9f9; }
 .color-option.silver { background: linear-gradient(135deg, #C0C0C0, #A9A9A9); }
-.color-option.white { background: #FFFFFF; border-color: #E5E7EB; }
+.color-option.red { background: linear-gradient(135deg, #DC143C, #B22222); }
 .color-option.turquoise { background: linear-gradient(135deg, #40E0D0, #20B2AA); }
 
 /* Time selection menu item */

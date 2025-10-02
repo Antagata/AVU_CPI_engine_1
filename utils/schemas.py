@@ -37,8 +37,15 @@ SCHEDULE_SCHEMA = {
     "additionalProperties": False
 }
 
-# Locked calendar has the same shape; just usually only locked slots are filled
-LOCKED_SCHEMA = SCHEDULE_SCHEMA
+# Locked calendar allows additional properties for leads boxes like "Leads (Thursday–Friday)"
+LOCKED_SCHEMA = {
+    "type": "object",
+    "properties": {d: _day_array() for d in DAYS},
+    "additionalProperties": {
+        "type": "array",
+        "items": {"anyOf": [{"type": "null"}, WINE_ITEM]}
+    }
+}
 
 ScheduleValidator = Draft7Validator(SCHEDULE_SCHEMA)
 LockedValidator = Draft7Validator(LOCKED_SCHEMA)
