@@ -135,8 +135,7 @@
       "locked": true,
       "slot": 0,
       "custom_card": true,
-      "card_color": "turquoise",
-      "schedule_time": "10:30"
+      "card_color": "turquoise"
     },
     {
       "id": null,
@@ -148,33 +147,245 @@
       "locked": true,
       "slot": 1,
       "custom_card": true,
-      "card_color": "gold",
-      "schedule_time": "11:30"
+      "card_color": "gold"
     },
-    null,
-    null,
-    null
+    {
+      "id": "49027",
+      "wine": "La Fleur P\u00e9trus",
+      "vintage": "2018",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 450,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 2,
+      "card_color": "gold"
+    },
+    {
+      "id": "35039",
+      "wine": "Pichon Longueville C",
+      "vintage": "2015",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 108,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 3,
+      "card_color": "gold"
+    },
+    {
+      "id": null,
+      "wine": "Pavie",
+      "vintage": "2019",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 72,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 4,
+      "card_color": "gold"
+    }
   ],
   "Friday": [
-    null,
-    null,
-    null,
-    null,
-    null
+    {
+      "id": null,
+      "wine": "Champagne Brut Comte",
+      "vintage": "2014",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0,
+      "custom_card": true,
+      "card_color": "gold"
+    },
+    {
+      "id": null,
+      "wine": "Hommage \u00e0 Jacques Pe",
+      "vintage": "NV",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 1,
+      "custom_card": true,
+      "card_color": "turquoise"
+    },
+    {
+      "id": "36554",
+      "wine": "Yquem",
+      "vintage": "2015",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 36,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 2,
+      "card_color": "gold"
+    },
+    {
+      "id": "45585",
+      "wine": "Clos Haut Peyraguey",
+      "vintage": "2017",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 132,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 3,
+      "card_color": "gold"
+    },
+    {
+      "id": null,
+      "wine": "Pavie",
+      "vintage": "2019",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 72,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 4,
+      "card_color": "red",
+      "reason_payload": {
+        "reason": "Horeca",
+        "winner_window": null,
+        "description": "",
+        "tags": []
+      }
+    }
   ],
   "Saturday": [
-    null,
-    null,
-    null,
-    null,
-    null
+    {
+      "id": "52619",
+      "wine": "Riesling  Zeltinger",
+      "vintage": "2017",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 6,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 0,
+      "card_color": "turquoise",
+      "schedule_time": "10:30"
+    },
+    {
+      "id": "48963",
+      "wine": "Margaux",
+      "vintage": "2018",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 90,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 1,
+      "card_color": "gold",
+      "reason_payload": {
+        "reason": "Normal",
+        "winner_window": null,
+        "description": "",
+        "tags": []
+      }
+    },
+    {
+      "id": null,
+      "wine": "degu Box",
+      "vintage": "2020",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 2,
+      "custom_card": true,
+      "card_color": "gold",
+      "schedule_time": "11:00"
+    },
+    {
+      "id": "61379",
+      "wine": "The Flight",
+      "vintage": "2019",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 90,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 3,
+      "card_color": "gold",
+      "reason_payload": {
+        "reason": "Normal",
+        "winner_window": null,
+        "description": "",
+        "tags": []
+      },
+      "schedule_time": "16:00"
+    },
+    {
+      "id": "65412",
+      "wine": "Concerto",
+      "vintage": "2023",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 2388,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 4,
+      "card_color": "red",
+      "schedule_time": "15:30"
+    }
   ],
   "Sunday": [
     null,
+    {
+      "id": "55195",
+      "wine": "Ornellaia",
+      "vintage": "2019",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 234,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 1,
+      "card_color": "gold",
+      "schedule_time": "15:00"
+    },
+    {
+      "id": "30022",
+      "wine": "Haut Brion Blanc",
+      "vintage": "2014",
+      "full_type": "Unknown",
+      "region_group": "Unknown",
+      "stock": 30,
+      "price_tier": "Unknown",
+      "locked": true,
+      "slot": 2,
+      "card_color": "gold",
+      "reason_payload": {
+        "reason": "Normal",
+        "winner_window": null,
+        "description": "",
+        "tags": []
+      },
+      "schedule_time": "16:45"
+    },
     null,
-    null,
-    null,
-    null
+    {
+      "id": null,
+      "wine": "DRC Roman\u00e9e Conti",
+      "vintage": "2016",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 4,
+      "custom_card": true,
+      "card_color": "gold",
+      "reason_payload": {
+        "reason": "Normal",
+        "winner_window": null,
+        "description": "",
+        "tags": []
+      },
+      "schedule_time": "18:00"
+    }
   ],
   "Leads (Tuesday\u2013Wednesday)": [
     {
@@ -201,7 +412,29 @@
   "Leads (Thursday\u2013Friday)": [
     {
       "id": null,
-      "wine": "*A Personal Note*",
+      "wine": "A Personal note",
+      "vintage": "NV",
+      "full_type": "Custom Wine",
+      "region_group": "Unknown",
+      "stock": 0,
+      "locked": true,
+      "slot": 0,
+      "custom_card": true,
+      "card_color": "gold",
+      "reason_payload": {
+        "reason": "Normal",
+        "winner_window": null,
+        "description": "",
+        "tags": [
+          "W"
+        ]
+      }
+    }
+  ],
+  "Leads (Saturday\u2013Sunday)": [
+    {
+      "id": null,
+      "wine": "september recap",
       "vintage": "NV",
       "full_type": "Custom Wine",
       "region_group": "Unknown",
