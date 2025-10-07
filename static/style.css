@@ -366,9 +366,12 @@ input[type="range"]::-moz-range-thumb {
   color: #2d3748 !important;
 }
 .wine-box.color-green {
-  background: #f9f9f9 !important; /* default color */
-  color: #333 !important;
-  border-color: #ddd !important;
+  background: linear-gradient(135deg, #32CD32, #228B22) !important;
+  color: #ffffff !important;
+  border-color: #006400 !important;
+}
+.wine-box.color-green * {
+  color: #ffffff !important;
 }
 .wine-box.color-silver {
   background: linear-gradient(135deg, #C0C0C0, #A9A9A9) !important;
@@ -508,7 +511,7 @@ input[type="range"]::-moz-range-thumb {
   border-color: #d4af37;
 }
 .color-option.gold { background: linear-gradient(135deg, #FFD700, #FFA500); }
-.color-option.green { background: #f9f9f9; }
+.color-option.green { background: linear-gradient(135deg, #32CD32, #228B22); }
 .color-option.silver { background: linear-gradient(135deg, #C0C0C0, #A9A9A9); }
 .color-option.red { background: linear-gradient(135deg, #DC143C, #B22222); }
 .color-option.turquoise { background: linear-gradient(135deg, #40E0D0, #20B2AA); }
@@ -754,35 +757,38 @@ input[type="range"]::-moz-range-thumb {
   height: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   margin: 0;
-  padding-right: 60px; /* Leave space for lock icon */
+  padding: 20px 80px 20px 20px; /* More space from right for reason badges */
   position: relative;
+  min-height: 120px;
 }
 
-/* Large wine name for 7-meter visibility */
+/* Even larger wine name for 7-meter visibility */
 #calendar-container.detached .wine-name {
-  font-size: 2.5rem !important;
+  font-size: 3.2rem !important;
   font-weight: 900 !important;
-  line-height: 1.1;
-  text-align: center;
+  line-height: 1.0;
+  text-align: left;
   word-wrap: break-word;
   hyphens: auto;
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  margin: 0;
 }
 
-/* Large vintage text positioned on the right */
+/* Larger vintage text positioned to the right of wine name */
 #calendar-container.detached .muted {
-  font-size: 1.8rem !important;
+  font-size: 2.2rem !important;
   font-weight: 700 !important;
   color: #666 !important;
   margin: 0;
   flex-shrink: 0;
+  text-align: right;
 }
 
 /* Lock button positioning in detached mode */
@@ -812,11 +818,12 @@ input[type="range"]::-moz-range-thumb {
 }
 
 #calendar-container.detached .reason-badge {
-  font-size: 1rem !important;
-  padding: 4px 8px !important;
-  border-radius: 12px !important;
+  font-size: 1.2rem !important;
+  padding: 6px 12px !important;
+  border-radius: 16px !important;
   font-weight: 700 !important;
   white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* Position tags container to the right side below reason */
@@ -832,11 +839,150 @@ input[type="range"]::-moz-range-thumb {
 }
 
 #calendar-container.detached .tag-badge {
-  font-size: 0.9rem !important;
-  padding: 3px 6px !important;
-  border-radius: 10px !important;
-  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+  padding: 4px 8px !important;
+  border-radius: 12px !important;
+  font-weight: 700 !important;
   white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Leads boxes in detached mode - expandable height with neutral background */
+#calendar-container.detached .fill-box.leads-box {
+  min-height: 120px !important; /* Minimum height to match regular boxes */
+  max-height: none !important; /* Allow expansion */
+  height: auto !important; /* Dynamic height based on content */
+  padding: 8px !important;
+  justify-content: flex-start !important;
+  background: rgba(128,128,128,0.1) !important; /* Neutral gray background */
+  border: 1px solid rgba(128,128,128,0.3) !important;
+  overflow: visible !important; /* Show all content */
+}
+
+#calendar-container.detached .fill-box.leads-box .leads-label {
+  font-size: 1.4rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 4px !important;
+  line-height: 1.1;
+}
+
+/* Wine cards in leads boxes - horizontal layout with vintage on the right */
+#calendar-container.detached .leads-box .wine-box {
+  height: auto !important;
+  min-height: 50px !important;
+  padding: 6px 8px !important;
+  margin-bottom: 4px !important;
+  position: relative !important; /* For time positioning */
+}
+
+#calendar-container.detached .leads-box .wine-header {
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 4px 8px !important;
+  margin: 0 !important;
+  min-height: auto !important;
+  height: auto !important;
+  gap: 8px !important;
+  text-align: left !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Wine name in leads boxes - left aligned and properly contained */
+#calendar-container.detached .leads-box .wine-name {
+  font-size: 1.8rem !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  margin: 0 !important;
+  flex: 1 !important;
+  text-align: left !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+  word-wrap: break-word !important;
+  hyphens: auto !important;
+  max-width: calc(100% - 80px) !important;
+  padding: 0 4px 0 0 !important;
+}
+
+/* Vintage in leads boxes - positioned to the right */
+#calendar-container.detached .leads-box .muted {
+  font-size: 1.6rem !important;
+  font-weight: 600 !important;
+  color: #888 !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+  padding-left: 8px !important;
+}
+
+/* Lock icon in leads boxes - positioned on the right within card boundaries */
+#calendar-container.detached .leads-box .lock-icon {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  transform: none !important;
+  font-size: 1.2rem !important;
+  width: 24px !important;
+  height: 24px !important;
+  padding: 2px !important;
+  margin-left: 4px !important;
+  flex-shrink: 0 !important;
+  background: rgba(255,255,255,0.9) !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Hide time display in leads boxes for detached calendar */
+#calendar-container.detached .leads-box .schedule-time {
+  display: none !important;
+}
+
+/* Make tags bigger and more visible in leads boxes for detached calendar - positioned at top center */
+#calendar-container.detached .leads-box .tags-container {
+  position: absolute !important;
+  top: 2px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 10 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 4px !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+}
+
+#calendar-container.detached .leads-box .tag-badge {
+  font-size: 2.4rem !important;
+  padding: 8px 12px !important;
+  border-radius: 10px !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4) !important;
+  border: 3px solid rgba(255,255,255,0.9) !important;
+  min-width: 3rem !important;
+  min-height: 3rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Make flag icons in leads boxes much bigger and more visible */
+#calendar-container.detached .leads-box .tag-badge .fi {
+  font-size: 2.6rem !important;
+  line-height: 1 !important;
+}
+
+/* Hide reason badges for cards in leads boxes in detached calendar */
+#calendar-container.detached .leads-box .reason-container {
+  display: none !important;
+}
+
+#calendar-container.detached .leads-box .reason-badge {
+  display: none !important;
 }
 
 /* =========================

@@ -16,7 +16,7 @@
   "use strict";
 
   // ===== Constants & State =====
-  const NUM_SLOTS = 5;
+  const NUM_SLOTS = 7;
   const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
   const URLS = {
@@ -650,8 +650,8 @@
       })();
       if (typeClass) el.classList.add(typeClass);
     } else {
-      // Apply custom color class
-      if (customColor !== 'green') { // green is default
+      // Apply custom color class (all colors need a class including green)
+      if (customColor && customColor !== 'default') {
         el.classList.add(`color-${customColor}`);
       }
     }
@@ -829,11 +829,22 @@
     Object.assign(ctxMenuEl.style, { left: `${left}px`, top: `${top}px`, position: "fixed" });
 
     ctxMenuEl.addEventListener("click", (e) => {
-      const li = e.target.closest("li[data-act]");
-      const colorOption = e.target.closest(".color-option");
+      // Handle tag option clicks first - before other handlers
+      const tagOption = e.target.closest(".tag-option");
+      if (tagOption) {
+        e.preventDefault();
+        e.stopPropagation();
+        const tag = tagOption.dataset.tag;
+        toggleCardTag(cardEl, tag);
+        destroyContextMenu();
+        return;
+      }
       
+      const colorOption = e.target.closest(".color-option");
       if (colorOption) {
         // Handle color selection
+        e.preventDefault();
+        e.stopPropagation();
         const color = colorOption.dataset.color;
         applyCardColor(cardEl, color);
         destroyContextMenu();
@@ -847,21 +858,17 @@
         return;
       }
       
+      const li = e.target.closest("li[data-act]");
       if (!li) return;
+      
+      e.preventDefault();
+      e.stopPropagation();
       const act = li.dataset.act;
       destroyContextMenu();
-      if (act === "delete") deleteCardFromCalendar(cardEl);
-      if (act === "move") openMoveWeekModal(cardEl);
-      if (act === "duplicate") duplicateCardInWeek(cardEl);
       
-      // Handle tag option clicks
-      const tagOption = e.target.closest(".tag-option");
-      if (tagOption) {
-        const tag = tagOption.dataset.tag;
-        toggleCardTag(cardEl, tag);
-        destroyContextMenu();
-        return;
-      }
+      if (act === "delete") deleteCardFromCalendar(cardEl);
+      else if (act === "move") openMoveWeekModal(cardEl);
+      else if (act === "duplicate") duplicateCardInWeek(cardEl);
     });
     
     // Add dedicated change event listener for time selection
@@ -1242,6 +1249,8 @@
   // ===== Snapshot persistence (full calendar: locked + auto) =====
   function readDOMFullState() {
     const out = {};
+    
+    // Handle regular calendar slots
     DAYS.forEach((day) => {
       const slots = [];
       for (let i = 0; i < NUM_SLOTS; i++) {
@@ -1260,22 +1269,53 @@
           avg_cpi_score: card.dataset.cpiScore || undefined,
           locked: card.dataset.locked === "true",
           custom_card: card.dataset.customCard === "true" || undefined,
-          card_color: card.dataset.cardColor || undefined
+          card_color: card.dataset.cardColor || undefined,
+          schedule_time: card.dataset.scheduleTime || undefined,
+          reason_payload: card.dataset.reasonPayload ? JSON.parse(card.dataset.reasonPayload) : undefined
         });
       }
       out[day] = slots;
     });
+    
+    // Handle leads boxes - store all cards for full state
+    $all(".leads-box").forEach((box) => {
+      const day = box.dataset.day;
+      if (!day) return;
+      const leadsSlots = [];
+      $all(".wine-box", box).forEach((card, idx) => {
+        leadsSlots.push({
+          id: card.dataset.id || null,
+          wine: card.dataset.name || "",
+          vintage: card.dataset.vintage || "",
+          full_type: card.dataset.type || undefined,
+          region_group: card.dataset.region || undefined,
+          stock: Number(card.dataset.stock || 0),
+          price_tier: card.dataset.priceTier || undefined,
+          locked: card.dataset.locked === "true",
+          slot: idx,
+          custom_card: card.dataset.customCard === "true" || undefined,
+          card_color: card.dataset.cardColor || undefined,
+          reason_payload: card.dataset.reasonPayload ? JSON.parse(card.dataset.reasonPayload) : undefined,
+          schedule_time: card.dataset.scheduleTime || undefined,
+          is_leads_box_card: true
+        });
+      });
+      if (leadsSlots.length > 0) {
+        out[day + "_leads"] = leadsSlots; // Use different key to avoid conflicts
+      }
+    });
+    
     return out;
   }
 
   async function persistFullCalendarSnapshot(year = currentYear, week = currentWeek) {
     const snap = readDOMFullState();
-    try { sessionStorage.setItem(weekSnapKey(year, week), JSON.stringify(snap)); } catch {}
+    try { localStorage.setItem(weekSnapKey(year, week), JSON.stringify(snap)); } catch {}
   }
 
   function loadFullCalendarSnapshot(year, week) {
     try {
-      const raw = sessionStorage.getItem(weekSnapKey(year, week));
+      const raw = localStorage.getItem(weekSnapKey(year, week));
       return raw ? JSON.parse(raw) : null;
     } catch { return null; }
   }
@@ -1311,12 +1351,12 @@
       out[day] = slots;
     });
     
-    // Handle leads boxes
+    // Handle leads boxes - store all cards (locked and unlocked) as they should persist
     $all(".leads-box").forEach((box) => {
       const day = box.dataset.day;
       if (!day) return;
       const slots = [];
-      $all(".wine-box[data-locked='true']", box).forEach((card, idx) => {
+      $all(".wine-box", box).forEach((card, idx) => {
         slots.push({
           id: card.dataset.id || null,
           wine: card.dataset.name || "",
@@ -1325,12 +1365,13 @@
           region_group: card.dataset.region || undefined,
           stock: Number(card.dataset.stock || 0),
           price_tier: card.dataset.priceTier || undefined,
-          locked: true,
+          locked: card.dataset.locked === "true", // Preserve actual lock state
           slot: idx,
           custom_card: card.dataset.customCard === "true" || undefined,
           card_color: card.dataset.cardColor || undefined,
           reason_payload: card.dataset.reasonPayload ? JSON.parse(card.dataset.reasonPayload) : undefined,
-          schedule_time: card.dataset.scheduleTime || undefined
+          schedule_time: card.dataset.scheduleTime || undefined,
+          is_leads_box_card: true // Mark as leads box card for proper restoration
         });
       });
       if (slots.length > 0) {
@@ -1348,7 +1389,7 @@
     } catch (e) {
       console.error("Failed to persist locked calendar:", e);
     } finally {
-      try { sessionStorage.setItem(weekLockedKey(year, week), JSON.stringify(payload)); } catch {}
+      try { localStorage.setItem(weekLockedKey(year, week), JSON.stringify(payload)); } catch {}
     }
   }
 
@@ -1359,7 +1400,7 @@
       const j = await getJSON(`${URLS.locked}?year=${encodeURIComponent(year)}&week=${encodeURIComponent(week)}`);
       const data = j.locked_calendar || {};
       if (data && Object.keys(data).length) {
-        try { sessionStorage.setItem(key, JSON.stringify(data)); } catch {}
+        try { localStorage.setItem(key, JSON.stringify(data)); } catch {}
         return data;
       }
     } catch {}
@@ -1368,13 +1409,13 @@
       const j = await getJSON(`${URLS.locked}?week=${encodeURIComponent(week)}`);
       const data = j.locked_calendar || {};
       if (data && Object.keys(data).length) {
-        try { sessionStorage.setItem(key, JSON.stringify(data)); } catch {}
+        try { localStorage.setItem(key, JSON.stringify(data)); } catch {}
         return data;
       }
     } catch {}
     // Local cache
     try {
-      const raw = sessionStorage.getItem(key);
+      const raw = localStorage.getItem(key);
       return raw ? JSON.parse(raw) : {};
     } catch { return {}; }
   }
@@ -1430,6 +1471,13 @@
       const items = leads[dayKey] || [];
       const box = $(`[data-day="${label}"]`);
       if (!box) continue;
+
+      // Only add API leads if the box doesn't already have persistent cards
+      const existingCards = box.querySelectorAll('.wine-box');
+      if (existingCards.length > 1) { // More than just the leads-label
+        console.log(`Skipping API leads for ${label} - persistent cards already present`);
+        continue;
+      }
 
       const overflow = box;
       overflow.innerHTML = `<div class="leads-label"><i class="fa-solid fa-bullhorn"></i> ${label}</div>`;
@@ -1492,16 +1540,19 @@
       const leadsBox = document.querySelector(`.leads-box[data-day="${day}"]`);
       if (!leadsBox) return;
       
+      // Clear existing leads label and content first
+      leadsBox.innerHTML = `<div class="leads-label"><i class="fa-solid fa-bullhorn"></i> ${day}</div>`;
+      
       arr.forEach((it, idx) => {
         if (!it) return;
         const k = makeKey(it.id || it.wine, it.vintage, it.wine);
         if (keys.has(k)) return;
         
-        renderWineIntoBox(leadsBox, {
+        const el = renderWineIntoBox(leadsBox, {
           id: it.id ?? it.wine_id ?? "",
           wine: it.wine ?? it.name ?? "Unknown",
           vintage: it.vintage ?? "NV",
-          locked: true,
+          locked: it.locked || it.is_leads_box_card || false, // Use actual lock state
           full_type: it.full_type,
           region_group: it.region_group,
           stock: it.stock ?? it.stock_count,
@@ -1512,10 +1563,19 @@
           schedule_time: it.schedule_time,
           custom_card: it.custom_card,
           card_color: it.card_color
-        }, { locked: true });
+        }, { locked: it.locked || it.is_leads_box_card || false });
+        
+        if (el) attachWineBoxDragHandlers(el);
         keys.add(k);
         placed = true;
       });
+      
+      // Update leads box state
+      if (arr.length > 0) {
+        leadsBox.classList.add("active", "filled");
+      } else {
+        leadsBox.classList.remove("active", "filled");
+      }
     });
     
     recalcAndUpdateGauge({ animate: false });
@@ -1601,6 +1661,8 @@
     if (!calendar) return false;
     const keys = new Set();
     let placed = false;
+    
+    // Render regular calendar slots
     DAYS.forEach((day) => {
       const arr = Array.isArray(calendar?.[day]) ? calendar[day] : [];
       arr.slice(0, NUM_SLOTS).forEach((it, idx) => {
@@ -1614,6 +1676,23 @@
         placed = true;
       });
     });
+    
+    // Render leads boxes
+    DAYS.forEach((day) => {
+      const leadsKey = day + "_leads";
+      const leadsArr = Array.isArray(calendar?.[leadsKey]) ? calendar[leadsKey] : [];
+      leadsArr.forEach((it, idx) => {
+        if (!it) return;
+        const k = makeKey(it.id || it.wine, it.vintage, it.wine);
+        if (keys.has(k)) return;
+        const leadsBox = document.querySelector(`.leads-box[data-day="${day}"]`);
+        if (!leadsBox) return;
+        renderWineIntoBox(leadsBox, it, { locked: !!it.locked });
+        keys.add(k);
+        placed = true;
+      });
+    });
+    
     recalcAndUpdateGauge({ animate: false });
     return placed;
   }
@@ -1985,9 +2064,11 @@
       itemWithReason.schedule_time = scheduleTime;
     }
     
-    // Auto-set turquoise color for Delayed reason
+    // Auto-assign colors for specific reasons
     if (reason === 'Delayed') {
       itemWithReason.card_color = 'turquoise';
+    } else if (reason === 'Horeca') {
+      itemWithReason.card_color = 'green';
     }
     
     // Now place the card with reason data
@@ -2054,6 +2135,7 @@
               <option value="Normal">Normal</option>
               <option value="Recall">Recall</option>
               <option value="Horeca">Horeca</option>
+              <option value="Lead">Lead</option>
               <option value="EnPrim">EnPrim</option>
               <option value="Winner">Winner (last N days)</option>
             </select>
@@ -2341,10 +2423,10 @@
   // ===== Color System =====
   function applyCardColor(card, color) {
     // Remove existing color classes
-    card.classList.remove('color-gold', 'color-green', 'color-silver', 'color-white');
+    card.classList.remove('color-gold', 'color-green', 'color-silver', 'color-red', 'color-turquoise');
     
-    // Add new color class
-    if (color !== 'green') { // green is default, no class needed
+    // Add new color class (all colors need a class including green)
+    if (color && color !== 'default') {
       card.classList.add(`color-${color}`);
     }
     
@@ -2756,12 +2838,33 @@
     fetchAndRenderLeads(currentWeek, currentYear);
   tryLoadCampaignIndex(); // fire and forget
 
-    const snap = loadFullCalendarSnapshot(currentYear, parseInt(currentActiveWeek, 10));
-    if (snap) {
-      renderFullFromData(snap);
+    // Check if we're loading the current week vs a different week
+    const isCurrentWeek = (parseInt(currentActiveWeek, 10) === currentWeek && currentYear === iso.year);
+    
+    if (!isCurrentWeek) {
+      // Loading a different week - use existing logic
+      const snap = loadFullCalendarSnapshot(currentYear, parseInt(currentActiveWeek, 10));
+      if (snap) {
+        renderFullFromData(snap);
+      } else {
+        const locked = await fetchLockedForWeek(parseInt(currentActiveWeek, 10), currentYear);
+        if (locked && Object.keys(locked).length) renderLockedOnlyFromData(locked);
+      }
     } else {
+      // Loading current week - start clean but restore persistent leads boxes
       const locked = await fetchLockedForWeek(parseInt(currentActiveWeek, 10), currentYear);
-      if (locked && Object.keys(locked).length) renderLockedOnlyFromData(locked);
+      if (locked && Object.keys(locked).length) {
+        // Only restore leads boxes and manually locked cards, not old calendar data
+        const leadsOnlyLocked = {};
+        Object.keys(locked).forEach(key => {
+          if (key.startsWith('Leads (') || !DAYS.includes(key)) {
+            leadsOnlyLocked[key] = locked[key];
+          }
+        });
+        if (Object.keys(leadsOnlyLocked).length) {
+          renderLockedOnlyFromData(leadsOnlyLocked);
+        }
+      }
     }
 
     $("#loyalty-group")?.addEventListener("click", (e) => {
